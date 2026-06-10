@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPS Dashboard · Grupo Diagonal 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --green:     #1A4731;
+    --teal:      #2D8C6E;
+    --teal-lt:   #3DAFA6;
+    --accent:    #A8EDCB;
+    --warn:      #F5A623;
+    --danger:    #E05252;
+    --ok:        #3DAFA6;
+    --bg:        #F4F7F5;
+    --surface:   #FFFFFF;
+    --border:    #DDE8E4;
+    --text:      #1A2E26;
+    --muted:     #3D5C4E;
+    --meta:      rgba(26,71,49,.08);
+    --radius:    14px;
+    --shadow:    0 2px 16px rgba(26,71,49,.08);
+    --shadow-md: 0 6px 32px rgba(26,71,49,.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--green);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .header-brand { display: flex; align-items: center; gap: 16px; }
+  .header-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 26px; color: #fff; }
+  .header-sub { font-size: 14px; color: rgba(255,255,255,.55); margin-top: 2px; }
+  .header-meta { display: flex; gap: 20px; }
+  .header-badge {
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 8px; padding: 8px 16px; text-align: center;
+  }
+  .header-badge .val { font-family: 'Outfit', sans-serif; font-size: 30px; font-weight: 800; color: #fff; line-height: 1; }
+  .header-badge .lbl { font-size: 14px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .5px; margin-top: 3px; }
+  .header-badge .sub { font-size: 15px; margin-top: 2px; }
+
+  /* ── NAV TABS ── */
+  .tab-bar {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    padding: 0 40px;
+    display: flex; gap: 0;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 14px 20px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 500;
+    color: var(--muted); white-space: nowrap;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: all .2s;
+  }
+  .tab-btn:hover { color: var(--teal); }
+  .tab-btn.active { color: var(--green); border-bottom-color: var(--teal); font-weight: 600; }
+  .tab-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+
+  /* ── MAIN LAYOUT ── */
+  main { padding: 32px 40px; max-width: 1400px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── GRID ── */
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .grid-65 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .span2 { grid-column: span 2; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* ── KPI CARD ── */
+  .kpi { display: flex; flex-direction: column; }
+  .kpi .val {
+    font-family: 'Outfit', sans-serif; font-size: 40px; font-weight: 800;
+    line-height: 1; color: var(--green);
+  }
+  .kpi .val.warn { color: var(--warn); }
+  .kpi .val.danger { color: var(--danger); }
+  .kpi .val.ok { color: var(--teal); }
+  .kpi .lbl { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .kpi .delta { font-size: 14px; font-weight: 500; margin-top: 8px; }
+  .delta.up { color: var(--teal); }
+  .delta.down { color: var(--danger); }
+  .delta.neutral { color: var(--warn); }
+
+  /* META BAR */
+  .meta-bar { height: 6px; background: var(--border); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+  .meta-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+
+  /* ── STAGE CARDS ── */
+  .stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stage-card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+    overflow: hidden; cursor: pointer; transition: box-shadow .2s, transform .15s;
+  }
+  .stage-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .stage-card.active { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal-lt); }
+  .stage-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 16px 18px 12px;
+  }
+  .stage-name { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; color: var(--green); }
+  .stage-badge {
+    font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800;
+    padding: 4px 10px; border-radius: 8px; line-height: 1.1;
+  }
+  .stage-row { display: flex; gap: 6px; padding: 0 18px 16px; }
+  .pill {
+    flex: 1; text-align: center; padding: 5px 4px;
+    border-radius: 6px; font-size: 14px; font-weight: 600; line-height: 1.3;
+  }
+  .pill.prom { background: rgba(61,175,166,.12); color: #1A6B63; }
+  .pill.neut { background: rgba(245,166,35,.1); color: #8A6200; }
+  .pill.det  { background: rgba(224,82,82,.1);  color: #A83232; }
+  .stage-trend { padding: 0 18px 14px; }
+  .trend-bar { display: flex; gap: 3px; align-items: flex-end; height: 32px; }
+  .trend-seg {
+    flex: 1; border-radius: 3px 3px 0 0; min-height: 2px;
+    transition: height .4s ease; position: relative;
+  }
+  .trend-seg.pos { background: var(--teal); }
+  .trend-seg.neg { background: var(--danger); }
+  .trend-seg.na  { background: var(--border); }
+  .trend-labels { display: flex; gap: 3px; margin-top: 4px; }
+  .trend-labels span { flex: 1; text-align: center; font-size: 14px; color: var(--muted); }
+
+  /* ── DETAIL PANEL ── */
+  .detail-panel {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--teal-lt); box-shadow: var(--shadow-md);
+    padding: 24px; margin-bottom: 24px;
+    animation: slideIn .25s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+  .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .detail-title { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; color: var(--green); }
+  .detail-close { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; padding: 4px 8px; }
+  .detail-close:hover { color: var(--text); }
+  .detail-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .insight-box { border-radius: 10px; padding: 16px; }
+  .insight-box.pos { background: rgba(61,175,166,.08); border: 1px solid rgba(61,175,166,.25); }
+  .insight-box.neg { background: rgba(224,82,82,.06); border: 1px solid rgba(224,82,82,.2); }
+  .insight-box.act { background: rgba(26,71,49,.05); border: 1px solid rgba(26,71,49,.15); }
+  .insight-title {
+    font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px;
+  }
+  .insight-box.pos .insight-title { color: #1A6B63; }
+  .insight-box.neg .insight-title { color: #A83232; }
+  .insight-box.act .insight-title { color: var(--green); }
+  .insight-item { display: flex; gap: 8px; margin-bottom: 7px; font-size: 14px; line-height: 1.5; }
+  .insight-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .pos .insight-dot { background: var(--teal); }
+  .neg .insight-dot { background: var(--danger); }
+  .act .insight-dot { background: var(--green); }
+  .quote-item {
+    font-size: 15px; color: var(--muted); font-style: italic;
+    border-left: 2px solid rgba(61,175,166,.35); padding-left: 8px;
+    margin-bottom: 6px; line-height: 1.5;
+  }
+
+  /* ── MOTIVE BARS ── */
+  .motive-item { margin-bottom: 12px; }
+  .motive-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .motive-label { font-size: 14px; font-weight: 600; color: var(--text); }
+  .motive-pct { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; color: var(--danger); }
+  .motive-bar-bg { height: 6px; background: rgba(224,82,82,.12); border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
+  .motive-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #E05252, #F08080); transition: width .8s ease; }
+  .motive-example { font-size: 15px; color: var(--muted); font-style: italic; line-height: 1.45; padding-left: 4px; }
+
+  /* ── CHART WRAPPERS ── */
+  .chart-wrap { position: relative; }
+  canvas { width: 100% !important; }
+
+  /* ── DONUT TRIO ── */
+  .donut-label { font-size: 15px; font-weight: 600; margin-top: 6px; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  thead tr { background: var(--meta); }
+  th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--muted); font-size: 15px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  .nps-chip {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px;
+  }
+  .nps-chip.great { background: rgba(61,175,166,.15); color: #1A6B63; }
+  .nps-chip.good  { background: rgba(168,237,203,.3); color: #1A4731; }
+  .nps-chip.warn  { background: rgba(245,166,35,.15); color: #8A6200; }
+  .nps-chip.danger{ background: rgba(224,82,82,.12); color: #A83232; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+    color: var(--green); margin-bottom: 16px; margin-top: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── MONTH SELECTOR ── */
+  .month-selector { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  /* ── LEGEND ── */
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* ── META INFO ── */
+  .meta-strip {
+    display: flex; gap: 24px; align-items: center;
+    background: rgba(26,71,49,.04); border-radius: 10px;
+    padding: 12px 20px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .meta-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .meta-icon { font-size: 16px; }
+  .meta-item strong { color: var(--green); }
+
+  /* ── KPI CAUSE TAB ── */
+  .kpi-stage-block { margin-bottom: 32px; }
+  .kpi-stage-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--green); color: #fff;
+  }
+  .kpi-stage-header .st-name { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 17px; flex: 1; }
+  .kpi-stage-header .st-nps  { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; }
+  .kpi-stage-header .st-sub  { font-size: 15px; opacity: .6; }
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 0;
+    border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius); overflow: hidden;
+    background: var(--surface);
+  }
+  .kpi-cell {
+    padding: 18px 16px; border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+  .kpi-cell:hover { background: var(--bg); }
+  .kpi-cell:last-child, .kpi-grid > .kpi-cell:nth-child(4n) { border-right: none; }
+  .kpi-cell-name {
+    font-size: 15px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+  }
+  .kpi-cell-val {
+    font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 28px;
+    line-height: 1; margin-bottom: 2px;
+  }
+  .kpi-cell-unit { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+  .kpi-cell-desc { font-size: 14px; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
+  .kpi-cell-why {
+    font-size: 15px; color: var(--muted); font-style: italic;
+    border-top: 1px solid var(--border); padding-top: 7px; line-height: 1.45;
+  }
+  .kpi-cell-meta {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 14px; font-weight: 600; padding: 2px 8px;
+    border-radius: 10px; margin-bottom: 6px;
+  }
+  .kpi-cell-meta.ref  { background: rgba(45,140,110,.1); color: #1A6B63; }
+  .kpi-cell-meta.warn { background: rgba(245,166,35,.12); color: #8A6200; }
+  .kpi-cell-meta.crit { background: rgba(224,82,82,.1);  color: #A83232; }
+  .kpi-origin-badge {
+    display: inline-block; font-size: 15px; font-weight: 700;
+    padding: 1px 7px; border-radius: 8px; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: .4px;
+  }
+  .origin-op  { background: rgba(61,175,166,.12); color: #1A6B63; }
+  .origin-crm { background: rgba(155,127,212,.12); color: #5B3FA8; }
+  .origin-fin { background: rgba(245,166,35,.12);  color: #8A6200; }
+  .kpi-intro {
+    background: rgba(26,71,49,.04); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+    font-size: 15px; line-height: 1.7; color: var(--text);
+  }
+  .kpi-intro strong { color: var(--green); }
+  @media (max-width: 900px) { .kpi-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 500px) { .kpi-grid { grid-template-columns: 1fr; } }
+
+  /* ── PROJEÇÃO ── */
+  .proj-intro {
+    background: rgba(224,82,82,.05); border: 1px solid rgba(224,82,82,.2);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+    font-size: 15px; line-height: 1.7;
+  }
+  .proj-intro strong { color: #A83232; }
+  .proj-intro .ok { color: var(--teal); font-weight: 600; }
+  .scenario-toggle { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .scen-btn {
+    padding: 7px 18px; border-radius: 20px; border: 2px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 600;
+    transition: all .2s; color: var(--muted);
+  }
+  .scen-btn.base.active  { border-color: #9B7FD4; background: rgba(155,127,212,.1); color: #5B3FA8; }
+  .scen-btn.meta75.active{ border-color: var(--teal); background: rgba(45,140,110,.08); color: var(--green); }
+  .scen-btn.meta80.active{ border-color: var(--warn); background: rgba(245,166,35,.1); color: #8A6200; }
+  .event-flag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 15px; font-weight: 600; padding: 2px 9px;
+    border-radius: 10px; margin-left: 4px; vertical-align: middle;
+  }
+  .event-flag.red  { background: rgba(224,82,82,.12); color: #A83232; }
+  .event-flag.blue { background: rgba(61,175,166,.12); color: #1A6B63; }
+  .proj-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+  .proj-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow);
+  }
+  .proj-card .lbl { font-size: 15px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; font-weight: 600; }
+  .proj-card .val { font-family: 'Outfit', sans-serif; font-size: 34px; font-weight: 800; line-height: 1; }
+  .proj-card .sub { font-size: 15px; color: var(--muted); margin-top: 4px; }
+  .req-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .req-table th { padding: 9px 14px; text-align: left; font-size: 15px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; background: var(--meta); }
+  .req-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  .req-table tr:last-child td { border-bottom: none; }
+  .diff-chip { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; padding: 2px 8px; border-radius: 8px; }
+  .diff-chip.up   { background: rgba(61,175,166,.12); color: #1A6B63; }
+  .diff-chip.same { background: rgba(168,237,203,.2); color: #1A4731; }
+  .diff-chip.down { background: rgba(245,166,35,.12); color: #8A6200; }
+  .diff-chip.hard { background: rgba(224,82,82,.1);  color: #A83232; }
+  /* ── MONTE CARLO ── */
+  .mc-intro {
+    background: rgba(108,99,255,.05); border: 1px solid rgba(108,99,255,.2);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+    font-size: 15px; line-height: 1.7;
+  }
+  .mc-intro strong { color: #3D38B8; }
+  .prob-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 24px; }
+  .prob-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 12px;
+    text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .prob-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .prob-card.p-crit::before  { background: #E05252; }
+  .prob-card.p-warn::before  { background: #F5A623; }
+  .prob-card.p-ok::before    { background: #2D8C6E; }
+  .prob-card.p-great::before { background: #6C63FF; }
+  .prob-card .meta-lbl { font-size: 15px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .prob-card .prob-val { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; }
+  .prob-card .prob-sub { font-size: 15px; color: var(--muted); margin-top: 4px; }
+  .ic-bar { height: 8px; background: var(--border); border-radius: 4px; margin: 8px 0 4px; position: relative; overflow: visible; }
+  .ic-range { position: absolute; height: 100%; border-radius: 4px; opacity: .35; }
+  .ic-median { position: absolute; width: 3px; height: 14px; top: -3px; border-radius: 2px; }
+  .mc-scen-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+  .mc-scen-btn {
+    padding: 6px 16px; border-radius: 20px; border: 2px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 600;
+    color: var(--muted); transition: all .2s;
+  }
+  .mc-scen-btn.active { border-color: #6C63FF; background: rgba(108,99,255,.08); color: #3D38B8; }
+  .dist-label { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .assumption-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .assumption-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .assumption-box .ab-title { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 8px; }
+  .assumption-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .assumption-row:last-child { border-bottom: none; }
+  .assumption-row .ar-val { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; }
+  .sigma-bar { display: inline-flex; gap: 2px; margin-left: 6px; }
+  .sigma-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .sigma-dot.fill { background: #6C63FF; }
+  @media (max-width: 900px) {
+    header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+    main { padding: 20px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2, .grid-3, .grid-65 { grid-template-columns: 1fr; }
+    .stage-grid { grid-template-columns: 1fr 1fr; }
+    .detail-body { grid-template-columns: 1fr; }
+    .tab-bar { padding: 0 16px; }
+  }
+  @media (max-width: 600px) {
+    .grid-4 { grid-template-columns: 1fr; }
+    .stage-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div>
+      <div class="header-title">Dashboard NPS · Grupo Diagonal</div>
+      <div class="header-sub">Jornada de Experiência do Cliente Jan–Mai 2026</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="header-badge">
+      <div class="val" id="hdr-nps">75</div>
+      <div class="lbl">NPS Global</div>
+      <div class="sub" style="color:var(--accent); font-size: 15px;">✓ Meta atingida</div>
+    </div>
+    <div class="header-badge">
+      <div class="val" style="font-size:20px; color:rgba(255,255,255,.6)">|</div>
+      <div class="lbl" style="margin-top:4px">Meta</div>
+      <div class="val" style="font-size:22px">75</div>
+    </div>
+    <div class="header-badge">
+      <div class="val" style="font-size:20px">829</div>
+      <div class="lbl">Respostas</div>
+      <div class="sub" style="color:rgba(255,255,255,.45); font-size: 15px;">Jan–Mai 2026</div>
+    </div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="overview">
+    <span class="tab-dot" style="background:#2D8C6E"></span>Visão Geral
+  </button>
+  <button class="tab-btn" data-tab="etapas">
+    <span class="tab-dot" style="background:#3DAFA6"></span>Por Etapa
+  </button>
+  <button class="tab-btn" data-tab="insights">
+    <span class="tab-dot" style="background:#F5A623"></span>Pontos &amp; Ações
+  </button>
+  <button class="tab-btn" data-tab="kpis">
+    <span class="tab-dot" style="background:#9B7FD4"></span>KPIs de Causa
+  </button>
+  <button class="tab-btn" data-tab="projecao">
+    <span class="tab-dot" style="background:#E05252"></span>Projeção 2026
+  </button>
+  <button class="tab-btn" data-tab="montecarlo">
+    <span class="tab-dot" style="background:#6C63FF"></span>Monte Carlo
+  </button>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════ TAB OVERVIEW ══ -->
+<div id="tab-overview" class="tab-panel active">
+
+  <div class="meta-strip">
+    <div class="meta-item"><span class="meta-icon">📅</span>Período: <strong>Jan a Mai 2026</strong></div>
+    <div class="meta-item"><span class="meta-icon">🎯</span>Meta Global: <strong>75 pts</strong></div>
+    <div class="meta-item"><span class="meta-icon">📊</span>Total de respostas: <strong>829</strong></div>
+    <div class="meta-item"><span class="meta-icon">🏢</span>Empresas: <strong>Victa Engenharia · Diagonal</strong></div>
+  </div>
+
+  <div class="grid-4">
+    <div class="card kpi">
+      <div class="card-title">NPS Global Acumulado</div>
+      <div class="val ok">75</div>
+      <div class="lbl">Jan–Mai 2026</div>
+      <div class="delta up">✓ Meta atingida (75)</div>
+      <div class="meta-bar"><div class="meta-fill" style="width:75%;background:var(--teal)"></div></div>
+    </div>
+    <div class="card kpi">
+      <div class="card-title">Promotores</div>
+      <div class="val ok">82%</div>
+      <div class="lbl">683 de 829 respostas</div>
+    </div>
+    <div class="card kpi">
+      <div class="card-title">Neutros</div>
+      <div class="val warn">10%</div>
+      <div class="lbl">87 de 829 respostas</div>
+    </div>
+    <div class="card kpi">
+      <div class="card-title">Detratores</div>
+      <div class="val danger">7%</div>
+      <div class="lbl">60 de 829 respostas</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:24px">
+      <div class="card-title">NPS Global · Evolução Mensal</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>NPS Mensal</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--warn);border-radius:50%"></div>Meta (75)</div>
+      </div>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="globalTrendChart"></canvas>
+      </div>
+    </div>
+
+  <div class="section-title">NPS por Etapa da Jornada · Acumulado</div>
+  <div class="table-wrap card" style="margin-bottom:24px">
+    <table>
+      <thead><tr>
+        <th>Etapa</th>
+        <th>NPS</th>
+        <th>vs Meta</th>
+        <th>Respostas</th>
+        <th>Promotores</th>
+        <th>Neutros</th>
+        <th>Detratores</th>
+        <th>Status</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Pós Venda</strong></td>
+          <td><span class="nps-chip great">93</span></td>
+          <td style="color:var(--teal)">+18</td>
+          <td>148</td>
+          <td>94% (140)</td><td>5% (7)</td><td>1% (2)</td>
+          <td>🟢 Destaque</td>
+        </tr>
+        <tr>
+          <td><strong>Pós Financiamento</strong></td>
+          <td><span class="nps-chip great">84</span></td>
+          <td style="color:var(--teal)">+9</td>
+          <td>259</td>
+          <td>88% (227)</td><td>8% (22)</td><td>4% (10)</td>
+          <td>🟢 Acima da meta</td>
+        </tr>
+        <tr>
+          <td><strong>Assistência / Suporte Técnico</strong></td>
+          <td><span class="nps-chip good">77</span></td>
+          <td style="color:var(--teal)">+2</td>
+          <td>298</td>
+          <td>85% (253)</td><td>7% (22)</td><td>8% (23)</td>
+          <td>🟡 Na meta</td>
+        </tr>
+        <tr>
+          <td><strong>Pós Vistoria</strong></td>
+          <td><span class="nps-chip good">73</span></td>
+          <td style="color:var(--warn)">−2</td>
+          <td>40</td>
+          <td>82% (33)</td><td>8% (3)</td><td>10% (4)</td>
+          <td>🟡 Atenção</td>
+        </tr>
+        <tr>
+          <td><strong>Pós Chaves</strong></td>
+          <td><span class="nps-chip warn">57</span></td>
+          <td style="color:var(--danger)">−18</td>
+          <td>21</td>
+          <td>67% (14)</td><td>24% (5)</td><td>10% (2)</td>
+          <td>🔴 Crítico</td>
+        </tr>
+        <tr>
+          <td><strong>Pós Ocupação</strong></td>
+          <td><span class="nps-chip danger">−5</span></td>
+          <td style="color:var(--danger)">−80</td>
+          <td>63</td>
+          <td>25% (16)</td><td>44% (28)</td><td>30% (19)</td>
+          <td>🔴 Crítico</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">NPS por Etapa · Comparativo Acumulado</div>
+    <div class="chart-wrap" style="height:220px">
+      <canvas id="stageBarChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ TAB ETAPAS ══ -->
+<div id="tab-etapas" class="tab-panel">
+
+  <div class="section-title">Clique em uma etapa para ver detalhes</div>
+
+  <div class="stage-grid" id="stageCards"></div>
+  <div id="detailPanel" style="display:none"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ TAB INSIGHTS ══ -->
+<div id="tab-insights" class="tab-panel">
+
+  <div class="section-title">Pontos Positivos, Negativos e Ações por Etapa</div>
+
+  <div id="insightsContainer"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ TAB KPIs ══ -->
+<div id="tab-kpis" class="tab-panel">
+
+  <div class="kpi-intro">
+    <strong>KPIs de Causa</strong> são indicadores operacionais que <strong>antecedem e explicam</strong> o resultado do NPS. Monitorá-los permite agir antes que a insatisfação apareça na pesquisa. Cada indicador está vinculado ao principal motivo de insatisfação identificado nos comentários.
+  </div>
+
+  <div id="kpiContainer"></div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ TAB PROJEÇÃO ══ -->
+<div id="tab-projecao" class="tab-panel">
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px">
+    <div style="background:rgba(45,140,110,.06);border:1px solid rgba(45,140,110,.25);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:var(--green);margin-bottom:8px">📊 Esta aba — Projeção</div>
+      <div style="font-size:15px;line-height:1.7;color:var(--text)">Mostra <strong>um caminho fixo</strong> mês a mês para cada cenário. Você escolhe o cenário ("Meta 75", por exemplo) e o modelo calcula o NPS acumulado assumindo que cada etapa vai performar exatamente como planejado. É como um orçamento: útil para visualizar <strong>o que precisa acontecer</strong> em cada etapa para chegar no resultado desejado.</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:10px;font-style:italic">Limitação: não diz quão provável aquele caminho é.</div>
+    </div>
+    <div style="background:rgba(108,99,255,.05);border:1px solid rgba(108,99,255,.2);border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;color:#3D38B8;margin-bottom:8px">🎲 Aba Monte Carlo — Probabilidade</div>
+      <div style="font-size:15px;line-height:1.7;color:var(--text)">Sorteia aleatoriamente o NPS de cada etapa <strong>50.000 vezes</strong>, respeitando a média e o desvio padrão de cada uma. O resultado não é "o NPS vai ser 76" — é <strong>"há X% de chance de fechar acima de 75"</strong>. Mostra a faixa realista de resultados possíveis e o risco de não bater uma meta.</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:10px;font-style:italic">Use em conjunto: a projeção mostra o plano, o Monte Carlo mostra o risco.</div>
+    </div>
+  </div>
+
+  <div class="proj-intro">
+    <strong>📈 Trajetória histórica de melhoria no Pós Ocupação:</strong> 2023 = <strong>−53</strong> · 2024 = <strong>−32</strong> · 2026 (até mai) = <strong>−5</strong> — evolução média de <strong>+24 pontos por ano</strong>. Essa tendência sustenta projeções mais otimistas para o <strong>Caucaia</strong> (Jun, ~100 respostas) e o <strong>Mondubim</strong> (Out, ~150 respostas), especialmente se as ações em áreas comuns forem implementadas antes das entregas.<br>
+    🏗️ <strong>Visita à Obra:</strong> o <strong>Vista Parque</strong> (Jul, 235 clientes) e o <strong>Vitória Acácia</strong> (Ago, 265 clientes) estão previstos para visita nesse período — etapa que antecede a vistoria. Com expectativa de 30% de resposta, são estimadas ~70 respostas no Vista Parque e ~79 no Vitória Acácia. Em 2025 essa etapa registrou NPS de <strong>84 e 78</strong>, usados como referência para a projeção e o Monte Carlo.<br>
+    ⚠️ <strong>Atenção ao 2º semestre:</strong> o <strong>Vista Mar</strong> entra no <strong>Pós Chaves em junho</strong>. O <strong>Epic e Connect (Diagonal)</strong> também entram no Pós Chaves, mas <strong>sem histórico de vistoria para comparar</strong>. A projeção considera aumento de taxa de resposta no Pós Venda (≥80 resp/mês) e Pós Ocupação (≥100 resp).<br>
+    Selecione o cenário para ver a trajetória: <span style="color:#5B3FA8;font-weight:600">sem mudança</span>, <span class="ok">meta 75</span> e <span style="color:#8A6200;font-weight:600">desafio 78+</span>.
+  </div>
+
+  <div class="section-title">Selecionar cenário</div>
+  <div class="scenario-toggle">
+    <button class="scen-btn base" data-scen="base">📉 Sem melhoria · fecha 73</button>
+    <button class="scen-btn meta75 active" data-scen="75">✅ Meta 75 · fecha 76</button>
+    <button class="scen-btn meta80" data-scen="80">🎯 Desafio · fecha 78+</button>
+    <span style="font-size: 15px;color:var(--muted);margin-left:8px">
+      <span class="event-flag red">🔴 Caucaia · Jun</span>
+      <span class="event-flag red">🔴 Mondubim · Out</span>
+      <span class="event-flag blue">🔵 Vista Mar · Pós Chaves · Jun</span>
+      <span class="event-flag blue">🔵 Epic + Connect · Pós Chaves · sem histórico</span>
+    </span>
+  </div>
+
+  <div class="proj-cards" id="projCards"></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">NPS Acumulado Projetado · Jan–Dez 2026</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="projLineChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">NPS Mensal Estimado · Jun–Dez</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="projBarChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">NPS necessário por etapa para fechar o ano</div>
+    <div style="overflow-x:auto">
+      <table class="req-table" id="reqTable">
+        <thead><tr>
+          <th>Etapa</th>
+          <th>Vol. Jun–Dez</th>
+          <th>NPS Atual</th>
+          <th>Meta 75 · NPS necessário</th>
+          <th>O que fazer</th>
+          <th>Desafio 77+ · NPS necessário</th>
+          <th>O que fazer</th>
+        </tr></thead>
+        <tbody id="reqTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">O que os cenários significam na prática</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:4px">
+        <div style="background:rgba(155,127,212,.06);border:1px solid rgba(155,127,212,.2);border-radius:10px;padding:16px">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size: 15px;color:#5B3FA8;margin-bottom:8px">📉 Sem melhoria · fecha ~73</div>
+          <div style="font-size: 14px;line-height:1.6;color:var(--text)">Mantendo os NPS atuais, o acumulado fecha em <strong>73</strong>. As Visitas à Obra do Vista Parque (Jul, ~70 resp) e Vitória Acácia (Ago, ~79 resp), com NPS histórico 78–84 em 2025, amortecem levemente o impacto do Caucaia (Jun) e Mondubim (Out). A tendência histórica no Pós Ocupação (+24 pts/ano) já embute alguma melhoria mesmo sem ações adicionais.</div>
+        </div>
+        <div style="background:rgba(45,140,110,.05);border:1px solid rgba(45,140,110,.2);border-radius:10px;padding:16px">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size: 15px;color:var(--green);margin-bottom:8px">✅ Meta 75 · fecha 76</div>
+          <div style="font-size: 14px;line-height:1.6;color:var(--text)">Visitas à Obra em Jul/Ago (Vista Parque ~70 resp + Vitória Acácia ~79 resp, NPS ~81 baseado em 2025) contribuem positivamente. Assistência sobe para 83, Pós Chaves para 81 via Vista Mar + Diagonal, Pós Ocupação com trajetória de melhoria — Caucaia ~0 e Mondubim ~20. Volume de Pós Venda precisa subir para <strong>≥80 resp/mês</strong>.</div>
+        </div>
+        <div style="background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.25);border-radius:10px;padding:16px">
+          <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size: 15px;color:#8A6200;margin-bottom:8px">🎯 Desafio · fecha ~78</div>
+          <div style="font-size: 14px;line-height:1.6;color:var(--text)">Visitas à Obra performando em 84+ (histórico superior de 2025), Assistência em 87, Pós Chaves em 88, Pós Vistoria em 86. Pós Ocupação em ~18 — Mondubim com ação estrutural em áreas comuns e materiais antes da entrega. <strong>A tendência histórica sustenta esse cenário</strong> — o desafio está em manter o ritmo e antecipar as ações.</div>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════ TAB MONTE CARLO ══ -->
+<div id="tab-montecarlo" class="tab-panel">
+
+  <div class="mc-intro">
+    <strong>Simulação de Monte Carlo · 50.000 iterações por cenário.</strong>
+    Em vez de um número pontual ("o NPS vai ser 75"), o modelo amostrou aleatoriamente o NPS de cada etapa em cada mês do segundo semestre — respeitando a <strong>média (μ)</strong> e o <strong>desvio padrão (σ)</strong> estimados para cada uma — e calculou o NPS acumulado de Dezembro para cada iteração. O resultado é uma <strong>distribuição de probabilidade</strong>: qual a chance real de fechar cada patamar, dependendo do cenário adotado.<br>
+    <span style="font-size:14px;color:var(--muted)">📐 <strong>O desvio padrão (σ)</strong> representa a <em>incerteza</em> de cada etapa: quanto maior o σ, mais o NPS real pode variar em torno da média esperada. Ex: Assistência tem σ = 3 (histórico estável, pouca surpresa) — Pós Chaves tem σ = 20 (sem histórico mensal, alta incerteza). Etapas com σ alto ampliam o leque de resultados possíveis no acumulado final.</span>
+  </div>
+
+  <div class="mc-scen-toggle">
+    <button class="mc-scen-btn active" data-mcs="base">Sem melhoria</button>
+    <button class="mc-scen-btn" data-mcs="75">Meta 75</button>
+    <button class="mc-scen-btn" data-mcs="80">Desafio 78+</button>
+  </div>
+
+  <div class="section-title">Probabilidade de atingir cada patamar · NPS Acumulado Dez/2026</div>
+  <div class="prob-grid" id="mcProbGrid"></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Distribuição do NPS Acumulado · Dezembro 2026</div>
+      <div style="font-size: 15px;color:var(--muted);margin-bottom:8px" id="mcDistLabel"></div>
+      <div class="chart-wrap" style="height:200px"><canvas id="mcHistChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Intervalo de Confiança · NPS Acumulado Mês a Mês</div>
+      <div style="font-size: 15px;color:var(--muted);margin-bottom:8px">Linha central = mediana · Faixa escura = IC 50% · Faixa clara = IC 80%</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="mcBandChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">Premissas do modelo · distribuições por etapa</div>
+  <div class="assumption-grid" id="mcAssumptions"></div>
+
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title">Contexto histórico e o que os dados dizem sobre o 2º semestre</div>
+    <div style="font-size: 15px;line-height:1.8;color:var(--text);padding:4px 0">
+      O Pós Ocupação tem evoluído consistentemente: <strong>2023 = −53 · 2024 = −32 · 2026 (mai) = −5</strong> — uma melhoria de <strong>+24 pontos por ano</strong>. As <strong>Visitas à Obra do Vista Parque (Jul, ~70 resp) e Vitória Acácia (Ago, ~79 resp)</strong> foram incorporadas como estimativa — baseadas nos resultados de 2025 (NPS 84 e 78) — e contribuem positivamente nos meses de Jul e Ago.<br><br>
+      No cenário de Desafio (78+), com <strong>50.000 simulações</strong>, a probabilidade de fechar o ano com NPS ≥ 77 é de <strong>96%</strong> e ≥ 80 é de <strong>9%</strong>. O impacto estrutural do Caucaia (Jun) e do Mondubim (Out) ainda dilui o acumulado — mas a tendência histórica e as visitas à obra no meio do ano amortecem esse efeito. <strong>A meta de 80 no acumulado anual é muito desafiadora</strong>, mas a trajetória aponta para resultados cada vez mais próximos.
+    </div>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+// ─────────── DATA ───────────
+const DATA = {
+  global: { nps: 75, prom: 82, neut: 10, det: 7, total: 829 },
+  monthly_global: { Jan: 80, Fev: 84, Mar: 55, Abr: 80, Mai: 82 },
+  stages: {
+    "Pós Venda":                  { nps: 93, prom: 94, neut: 5,  det: 1,  total: 148, color: "#2D8C6E" },
+    "Pós Financiamento":          { nps: 84, prom: 88, neut: 8,  det: 4,  total: 259, color: "#3DAFA6" },
+    "Assistência/Suporte Técnico":{ nps: 77, prom: 85, neut: 7,  det: 8,  total: 298, color: "#5ABCB0" },
+    "Pós Vistoria":               { nps: 73, prom: 82, neut: 8,  det: 10, total: 40,  color: "#A8EDCB" },
+    "Pós Chaves":                 { nps: 57, prom: 67, neut: 24, det: 10, total: 21,  color: "#F5A623" },
+    "Pós Ocupação":               { nps: -5, prom: 25, neut: 44, det: 30, total: 63,  color: "#E05252" },
+  },
+  monthly: {
+    "Pós Venda":                  { Jan:94, Fev:95, Mar:96, Abr:93, Mai:88 },
+    "Pós Financiamento":          { Jan:80, Fev:89, Mar:79, Abr:87, Mai:84 },
+    "Assistência/Suporte Técnico":{ Jan:76, Fev:75, Mar:80, Abr:80, Mai:75 },
+    "Pós Vistoria":               { Jan:81, Fev:100,Mar:0,  Abr:62, Mai:100 },
+    "Pós Chaves":                 { Jan:null,Fev:null,Mar:null,Abr:53,Mai:100 },
+    "Pós Ocupação":               { Jan:null,Fev:null,Mar:-5,Abr:0, Mai:null },
+  },
+  insights: {
+    "Pós Venda": {
+      pos: [
+        "Corretores elogiados nominalmente por atenção e dedicação",
+        "\"o corretor Cleo foi muito atencioso nas informações do imóvel\"",
+        "\"Parabenizo o corretor Ronald e a Carol pelo excelente atendimento\"",
+        "\"Recebi um excelente atendimento da corretora Edna, com muita atenção e delicadeza\""
+      ],
+      motivos: [
+        { pct: 50, label: "Falta de transparência e retorno após a assinatura", exemplo: "\"Maior transparência ao cliente do processo de aquisição... não há percepção de segurança das informações\"" },
+        { pct: 25, label: "Contrato não compreendido / não explicado na venda", exemplo: "\"A minuta do contrato não deveria ser tão engessada... alterações necessárias não foram permitidas\"" },
+        { pct: 25, label: "Insatisfação genérica com o pós-venda", exemplo: "\"O pós venda de vcs deixa muito a desejar\"" }
+      ],
+      acoes: ["Tornar pontos-chave do contrato mais didáticos: glossário de cláusulas com contexto e linguagem acessível"],
+      n_neg: 4
+    },
+    "Pós Financiamento": {
+      pos: [
+        "Processo percebido como ágil e bem suportado pela equipe",
+        "Sem comentários negativos registrados nesta etapa — 100% dos det/neutros não comentaram",
+        "Alta base de respostas (259) com NPS de 84 demonstra consistência"
+      ],
+      motivos: [
+        { pct: 100, label: "Sem comentários de insatisfação registrados", exemplo: "Detratores e neutros não deixaram comentários nesta etapa. Análise qualitativa indisponível." }
+      ],
+      acoes: ["Tornar o comentário obrigatório para notas ≤ 7 na pesquisa desta etapa", "Contato ativo pós-assinatura: acionar uma amostra de clientes por ligação ou mensagem para aumentar o volume de comentários e identificar dúvidas antes que virem reclamação"],
+      n_neg: null
+    },
+    "Assistência/Suporte Técnico": {
+      pos: [
+        "Agilidade e presteza na execução dos reparos elogiadas",
+        "\"Serviço executado rapidamente\"",
+        "\"Obrigado à equipe da assistência que prontamente sanou o problema como sempre no padrão Diagonal\"",
+        "Profissionais nomeados positivamente: Márcio, Erivam, Erivandro"
+      ],
+      motivos: [
+        { pct: 30, label: "Serviço incompleto / má execução", exemplo: "\"Precisei disponibilizar equipamentos pessoais para o carpinteiro concluir o serviço\" / \"Deixaram um buraco aberto e uma cerâmica quebrada\"" },
+        { pct: 20, label: "Chamado encerrado sem resolução", exemplo: "\"O chamado foi fechado sem o problema do meu quintal infiltrando água estar resolvido até o momento\"" },
+        { pct: 20, label: "Reincidência / múltiplas visitas para o mesmo problema", exemplo: "\"Estiveram 4 vezes no local e talvez tenha resolvido da quarta\"" },
+        { pct: 10, label: "Problema estrutural / falha de projeto", exemplo: "\"O dreno do ar condicionado cai dentro de uma caixa de gordura — erro de engenharia\"" },
+        { pct: 10, label: "Muitos reparos pendentes (genérico)", exemplo: "\"Tem muitos reparos para fazer ainda\"" },
+        { pct: 10, label: "Falta de comunicação sobre retorno no portal", exemplo: "\"Incluir texto sobre o retorno das assistências no portal\"" }
+      ],
+      acoes: ["Bloquear encerramento de chamado sem confirmação do cliente", "Reavaliar o checklist de execução dos técnicos para verificar se cobre os tipos de serviço com mais reincidência — e atualizar onde houver lacunas"],
+      n_neg: 10
+    },
+    "Pós Vistoria": {
+      pos: [
+        "Profissionais da vistoria reconhecidos por atenção e preparo",
+        "\"Foi excelente o atendimento e preparo profissional do colaborador\"",
+        "\"A Victa está de parabéns. O técnico muito educado e atencioso\"",
+        "Qualidade estrutural e acabamento externo elogiados"
+      ],
+      motivos: [
+        { pct: 33, label: "Informação incorreta ou não repassada na venda", exemplo: "\"Compramos confiando no vendedor que mostrou que o 603 ficaria de frente à Av. Dominguinhos. Na vistoria descobrimos que fica do outro lado\"" },
+        { pct: 33, label: "Pendências não resolvidas / cliente aceita por cansaço", exemplo: "\"Ficaram alguns pontos pendentes. Aceitei porque não tenho como ficar marcando inúmeras vistorias\"" },
+        { pct: 33, label: "Comunicação pós-vistoria insuficiente", exemplo: "\"Melhorar a comunicação pós-venda\"" }
+      ],
+      acoes: ["Reavaliar o checklist de vistoria para verificar se cobre todos os pontos reclamados — e atualizar onde houver lacunas", "Formalizar prazo de resolução das pendências de vistoria com comunicação escrita ao cliente"],
+      n_neg: 3
+    },
+    "Pós Chaves": {
+      pos: [
+        "Acabamento e estética do imóvel elogiados",
+        "\"o acabamento é maravilhoso\"",
+        "NPS de 100 em Maio — quando o processo está organizado, o resultado é excelente"
+      ],
+      motivos: [
+        { pct: 33, label: "Falta de orientação sobre ligação de energia e água (Enel)", exemplo: "\"Falta de organização ao entregar energia e água\"" },
+        { pct: 33, label: "Acabamento e vedação abaixo do esperado", exemplo: "\"Melhorias no acabamento, especialmente na pintura das alvenarias e no selamento das janelas\"" },
+        { pct: 33, label: "Atendimento ruim e burocracia pós-assinatura", exemplo: "\"Desde que assinei foi só dor de cabeça. Tudo burocrático para resolver, tudo péssimo\"" }
+      ],
+      acoes: ["Enviar guia do morador com passo a passo da ligação Enel antes da entrega de chaves", "Tornar o comentário obrigatório para notas ≤ 7 — com apenas 21 respostas a base ainda é pequena para decisões"],
+      n_neg: 3
+    },
+    "Pós Ocupação": {
+      pos: [
+        "Processo de compra e acompanhamento de obra elogiados",
+        "\"A experiência durante o processo de compra foi bem positiva\"",
+        "Equipe de assistência reconhecida por qualidade quando acionada",
+        "25% de promotores mesmo em contexto de moradia com problemas"
+      ],
+      motivos: [
+        { pct: 46, label: "Vagas de garagem pequenas / mal projetadas", exemplo: "\"Vagas com tamanho minúsculos. Não se consegue ter acessibilidade quando tem dois carros\"" },
+        { pct: 14, label: "Qualidade dos materiais e acabamento", exemplo: "\"Piso de péssima qualidade, reboco mal feito... materiais de baixa qualidade\"" },
+        { pct: 14, label: "Áreas comuns aquém do prometido", exemplo: "\"Parquinho muito pequeno, academia com aparelhos de baixa qualidade, piscina diferente do projeto\"" },
+        { pct: 11, label: "Acústica ruim / isolamento insuficiente", exemplo: "\"Venderam dizendo que possui bom isolamento acústico, mas você escuta até o peido do vizinho\"" },
+        { pct: 11, label: "Infiltração e vazamentos", exemplo: "\"Vários apartamentos com vazamento em dias de chuva\"" },
+        { pct: 11, label: "Atendimento e comunicação pós-ocupação", exemplo: "\"Dar um melhor treinamento à equipe de atendimento online\"" }
+      ],
+      acoes: ["Revisar o checklist de vistoria para avaliar se cobre os itens de assistência mais recorrentes no pós-ocupação", "Incluir sinalização na pesquisa de pós-ocupação sobre os principais temas reclamados para aumentar a especificidade das respostas"],
+      n_neg: 28
+    }
+  }
+};
+
+const MESES = ['Jan','Fev','Mar','Abr','Mai'];
+const STAGE_NAMES = Object.keys(DATA.stages);
+const META = 75;
+
+// ─────────── COLORS ───────────
+function npsColor(v) {
+  if (v === null) return '#ddd';
+  if (v >= 75) return '#2D8C6E';
+  if (v >= 50) return '#A8EDCB';
+  if (v >= 0)  return '#F5A623';
+  return '#E05252';
+}
+function npsChipClass(v) {
+  if (v === null) return '';
+  if (v >= 75) return 'great';
+  if (v >= 50) return 'good';
+  if (v >= 0)  return 'warn';
+  return 'danger';
+}
+
+// ─────────── CHARTS ───────────
+Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+Chart.defaults.color = '#6B8C7D';
+
+// Global trend line
+const globalTrend = new Chart(document.getElementById('globalTrendChart'), {
+  type: 'line',
+  data: {
+    labels: MESES,
+    datasets: [
+      {
+        label: 'NPS Global', data: [80,84,55,80,82],
+        borderColor: '#2D8C6E', backgroundColor: 'rgba(45,140,110,.1)',
+        borderWidth: 2.5, pointRadius: 5, pointBackgroundColor: '#2D8C6E', fill: true, tension: .35
+      },
+      {
+        label: 'Meta (75)', data: [75,75,75,75,75],
+        borderColor: '#F5A623', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// Stage bar chart
+new Chart(document.getElementById('stageBarChart'), {
+  type: 'bar',
+  data: {
+    labels: STAGE_NAMES.map(s => s.length > 20 ? s.slice(0,20)+'…' : s),
+    datasets: [
+      {
+        label: 'NPS Acumulado',
+        data: STAGE_NAMES.map(s => DATA.stages[s].nps),
+        backgroundColor: STAGE_NAMES.map(s => DATA.stages[s].color + 'CC'),
+        borderRadius: 6, borderSkipped: false
+      },
+      {
+        label: 'Meta', type: 'line',
+        data: STAGE_NAMES.map(() => META),
+        borderColor: '#F5A623', borderDash: [5,3], borderWidth: 1.5,
+        pointRadius: 0, fill: false
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { min: -20, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ─────────── STAGE CARDS ───────────
+const stageGrid = document.getElementById('stageCards');
+let activeStage = null;
+
+STAGE_NAMES.forEach(stage => {
+  const d = DATA.stages[stage];
+  const mon = DATA.monthly[stage];
+  const card = document.createElement('div');
+  card.className = 'stage-card';
+  card.dataset.stage = stage;
+
+  const maxAbs = Math.max(...MESES.map(m => mon[m] !== null ? Math.abs(mon[m]) : 0), 10);
+
+  const trendSegs = MESES.map(m => {
+    const v = mon[m];
+    if (v === null) return `<div class="trend-seg na" style="height:8px" title="${m}: sem dados"></div>`;
+    const h = Math.max(4, Math.round((Math.abs(v) / maxAbs) * 30));
+    const cls = v >= 0 ? 'pos' : 'neg';
+    return `<div class="trend-seg ${cls}" style="height:${h}px" title="${m}: ${v}"></div>`;
+  }).join('');
+
+  const badgeColor = npsColor(d.nps);
+  card.innerHTML = `
+    <div class="stage-header">
+      <div class="stage-name">${stage}</div>
+      <div class="stage-badge" style="color:${badgeColor};background:${badgeColor}18">${d.nps}</div>
+    </div>
+    <div class="stage-row">
+      <div class="pill prom">▲ ${d.prom}%<br>Prom.</div>
+      <div class="pill neut">— ${d.neut}%<br>Neut.</div>
+      <div class="pill det">▼ ${d.det}%<br>Det.</div>
+    </div>
+    <div class="stage-trend">
+      <div style="font-size: 15px;color:var(--muted);margin-bottom:4px">Tendência mensal</div>
+      <div class="trend-bar">${trendSegs}</div>
+      <div class="trend-labels">${MESES.map(m=>`<span>${m}</span>`).join('')}</div>
+    </div>
+  `;
+  card.addEventListener('click', () => toggleDetail(stage, card));
+  stageGrid.appendChild(card);
+});
+
+function buildInsightHTML(ins) {
+  const posItems = ins.pos.map(p => {
+    const isQuote = p.startsWith('"');
+    return isQuote
+      ? `<div class="quote-item">${p}</div>`
+      : `<div class="insight-item"><div class="insight-dot"></div><span>${p}</span></div>`;
+  }).join('');
+
+  const motivoItems = ins.motivos.map(m => {
+    const n = ins.n_neg ? Math.round(m.pct / 100 * ins.n_neg) : null;
+    const countTag = n !== null ? `<span style="font-size: 15px;font-weight:700;color:#fff;background:var(--danger);border-radius:10px;padding:1px 7px;margin-right:6px">${n}</span>` : '';
+    return `
+    <div class="motive-item">
+      <div class="motive-header">
+        <span class="motive-label">${countTag}${m.label}</span>
+        <span class="motive-pct">${m.pct}%</span>
+      </div>
+      <div class="motive-bar-bg"><div class="motive-bar-fill" style="width:${m.pct}%"></div></div>
+      <div class="motive-example">${m.exemplo}</div>
+    </div>
+  `}).join('');
+
+  const actItems = ins.acoes.map(p =>
+    `<div class="insight-item"><div class="insight-dot"></div><span>${p}</span></div>`
+  ).join('');
+
+  return { posItems, motivoItems, actItems };
+}
+
+function toggleDetail(stage, card) {
+  const panel = document.getElementById('detailPanel');
+  if (activeStage === stage) {
+    panel.style.display = 'none';
+    card.classList.remove('active');
+    activeStage = null;
+    return;
+  }
+  document.querySelectorAll('.stage-card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+  activeStage = stage;
+
+  const ins = DATA.insights[stage];
+  const { posItems, motivoItems, actItems } = buildInsightHTML(ins);
+
+  panel.innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-header">
+        <div class="detail-title">📍 ${stage} · NPS ${DATA.stages[stage].nps} · ${DATA.stages[stage].total} respostas</div>
+        <button class="detail-close" onclick="document.getElementById('detailPanel').style.display='none';document.querySelectorAll('.stage-card').forEach(c=>c.classList.remove('active'));activeStage=null;">✕</button>
+      </div>
+      <div class="detail-body">
+        <div class="insight-box pos">
+          <div class="insight-title">✅ Pontos Positivos</div>
+          ${posItems}
+        </div>
+        <div class="insight-box neg">
+          <div class="insight-title">⚠️ Motivos de Insatisfação</div>
+          ${motivoItems}
+        </div>
+        <div class="insight-box act">
+          <div class="insight-title">🚀 Ações</div>
+          ${actItems}
+        </div>
+      </div>
+    </div>
+  `;
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ─────────── INSIGHTS TAB ───────────
+const insightsContainer = document.getElementById('insightsContainer');
+STAGE_NAMES.forEach(stage => {
+  const d = DATA.stages[stage];
+  const ins = DATA.insights[stage];
+  const { posItems, motivoItems, actItems } = buildInsightHTML(ins);
+
+  const block = document.createElement('div');
+  block.style.marginBottom = '28px';
+  block.innerHTML = `
+    <div class="section-title">
+      <span style="background:${npsColor(d.nps)};color:#fff;padding:3px 10px;border-radius:20px;font-size: 14px;font-weight:700">${d.nps}</span>
+      ${stage}
+      <span style="font-size: 15px;color:var(--muted);font-weight:400;margin-left:4px">${d.total} respostas · ${d.det}% detratores · ${d.neut}% neutros</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.4fr 0.7fr;gap:16px">
+      <div class="insight-box pos">
+        <div class="insight-title">✅ Pontos Positivos</div>${posItems}
+      </div>
+      <div class="insight-box neg">
+        <div class="insight-title">⚠️ Motivos de Insatisfação</div>${motivoItems}
+      </div>
+      <div class="insight-box act">
+        <div class="insight-title">🚀 Ações</div>${actItems}
+      </div>
+    </div>
+  `;
+  insightsContainer.appendChild(block);
+});
+
+// ─────────── KPI CAUSE DATA ───────────
+const KPI_DATA = [
+  {
+    stage: "Pós Venda",
+    nps: 93,
+    cor: "#2D8C6E",
+    kpis: [
+      {
+        nome: "Taxa de Retorno do Corretor",
+        val: "—", unit: "% de clientes recontactados em até 48h após a assinatura",
+        como: "Extrair do CRM (CV/Salesforce) os registros de follow-up pós-assinatura; revisar mensalmente por corretor", tipo: "ref",
+        desc: "Mede se o corretor mantém contato ativo após a assinatura. Elogios nominais recorrentes mostram que quando isso acontece o NPS sobe consistentemente.",
+        porque: "Clientes que se sentem acompanhados dão notas mais altas. O abandono pós-assinatura é a origem da maioria das reclamações de transparência.",
+        fonte: "crm"
+      },
+      {
+        nome: "Taxa de Clientes com Dúvida sobre Cláusula Contratual",
+        val: "—", unit: "% de clientes que acionaram atendimento com dúvida sobre o contrato após assinatura",
+        como: "Filtrar tickets de atendimento com tag 'dúvida contratual' ou similar; acompanhar quinzenalmente", tipo: "warn",
+        desc: "Mede quantos clientes, depois de assinar, voltaram com dúvidas ou estranhamento sobre termos do contrato. É um sinal direto de que a explicação do corretor foi insuficiente — não que o contrato seja ruim.",
+        porque: "29% dos comentários negativos envolvem frustração com cláusulas. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
+        fonte: "crm"
+      },
+      {
+        nome: "Taxa de Reclamações por Informação Não Recebida",
+        val: "—", unit: "% de atendimentos com motivo 'não fui informado' ou 'corretor não explicou'",
+        como: "Usar o tracker de reclamações por motivo já existente; criar categoria específica se não houver; revisar mensalmente", tipo: "warn",
+        desc: "Filtra, da taxa de reclamações por motivo que já é acompanhada, os registros onde o cliente afirma que uma informação relevante não foi passada pelo corretor na venda.",
+        porque: "É o indicador mais direto de qualidade da venda. Quando sobe, o NPS do Pós Venda cai — e o problema já chegou ao cliente antes mesmo da obra.",
+        fonte: "crm"
+      },
+      {
+        nome: "Prazo Médio de Resposta a Dúvidas Contratuais",
+        val: "—", unit: "horas entre acionamento do cliente e resposta da equipe sobre contrato",
+        como: "Calcular a partir dos timestamps de abertura e 1ª resposta no sistema de atendimento; monitorar semanalmente", tipo: "warn",
+        desc: "Mede a agilidade do time de atendimento ao responder dúvidas contratuais pós-assinatura. Clientes com dúvida que ficam sem resposta rápida migram de neutros para detratores.",
+        porque: "Lentidão no retorno foi citada em 28% dos comentários negativos. A dúvida contratual não resolvida rapidamente vira desconfiança.",
+        fonte: "crm"
+      }
+    ]
+  },
+  {
+    stage: "Pós Financiamento",
+    nps: 84,
+    cor: "#3DAFA6",
+    kpis: [
+      {
+        nome: "Prazo Médio de Aprovação",
+        val: "—", unit: "dias corridos entre proposta e aprovação bancária",
+        como: "Registrar datas de envio e aprovação no TOTVS ou planilha de controle; acompanhar mensalmente por banco", tipo: "warn",
+        desc: "Tempo total entre o envio da proposta ao banco e a aprovação do crédito. Atrasos geram ansiedade e desgaste no cliente.",
+        porque: "É o principal gerador de atrito nessa etapa — clientes sem notícia ficam inseguros e neutros.",
+        fonte: "fin"
+      },
+      {
+        nome: "Taxa de Documentação Completa (1ª entrega)",
+        val: "—", unit: "% de dossiês enviados sem pendência",
+        como: "Registrar se o dossiê retornou com pendência ou foi aprovado de primeira; calcular mensalmente", tipo: "warn",
+        desc: "Mede quantos clientes entregam toda a documentação correta na primeira tentativa, sem precisar de retorno.",
+        porque: "Idas e vindas documentais são a causa oculta de atrasos — e de neutros que não reclamam, mas não promovem.",
+        fonte: "fin"
+      },
+      {
+        nome: "Taxa de Reclamações por Cláusula Contratual",
+        val: "—", unit: "% de clientes que acionaram suporte com dúvida ou contestação de cláusula",
+        como: "Filtrar tickets de atendimento com motivo contratual no CRM; revisar quinzenalmente", tipo: "warn",
+        desc: "Proporção de clientes que, após assinatura, retornaram com dúvidas ou insatisfação sobre termos contratuais — indicando que o contrato não foi suficientemente explicado no momento da venda.",
+        porque: "Contratos unilaterais são uma realidade do setor, mas a insatisfação surge quando o cliente não entendeu o que assinou. O KPI captura falha de comunicação, não falha contratual.",
+        fonte: "crm"
+      },
+      {
+        nome: "Frequência de Status Update",
+        val: "—", unit: "média de comunicações ativas por cliente no processo",
+        como: "Contar registros de contato proativo no histórico do CRM por cliente; avaliar mensalmente", tipo: "ref",
+        desc: "Quantidade de comunicações proativas enviadas ao cliente durante o processo de financiamento.",
+        porque: "A ausência de atualizações é o que transforma um promotor em neutro nessa etapa — o cliente que não recebe notícia imagina o pior.",
+        fonte: "crm"
+      }
+    ]
+  },
+  {
+    stage: "Assistência/Suporte Técnico",
+    nps: 77,
+    cor: "#5ABCB0",
+    kpis: [
+      {
+        nome: "Prazo Médio de Resolução (PMR)",
+        val: "—", unit: "dias corridos até encerramento do chamado",
+        como: "Extrair do sistema de chamados a diferença entre data de abertura e encerramento; acompanhar semanalmente", tipo: "warn",
+        desc: "Tempo entre abertura e resolução confirmada pelo cliente. É o KPI de maior correlação com NPS nessa etapa.",
+        porque: "40% dos comentários negativos são sobre chamados encerrados sem resolver o problema. Prazo longo = detrator.",
+        fonte: "op"
+      },
+      {
+        nome: "Taxa de Reincidência",
+        val: "—", unit: "% de chamados reabertos no mesmo problema em 30 dias",
+        como: "Cruzar chamados com mesmo cliente e motivo nos últimos 30 dias no sistema de tickets; revisar mensalmente", tipo: "crit",
+        desc: "Mede quantos chamados precisaram ser reabertos porque o problema voltou a ocorrer após o encerramento.",
+        porque: "\"Estiveram 4 vezes no local\" — reincidência é o maior destruidor de confiança no suporte técnico.",
+        fonte: "op"
+      },
+      {
+        nome: "Taxa de Encerramento Indevido",
+        val: "—", unit: "% de chamados encerrados sem confirmação do cliente",
+        como: "Verificar se o fluxo de encerramento exige confirmação do cliente; auditar amostra quinzenal de chamados fechados", tipo: "crit",
+        desc: "Identifica chamados marcados como resolvidos no sistema sem que o cliente tenha confirmado a resolução.",
+        porque: "\"O chamado foi fechado sem o problema estar resolvido\" — é o motivo mais grave de insatisfação nessa etapa.",
+        fonte: "op"
+      },
+      {
+        nome: "Taxa de Primeiro Contato Resolvido (FCR)",
+        val: "—", unit: "% de chamados resolvidos na primeira visita técnica",
+        como: "Registrar no sistema se foi necessária mais de uma visita para o mesmo chamado; calcular mensalmente", tipo: "warn",
+        desc: "Proporção de chamados que foram completamente resolvidos sem necessidade de retorno do técnico.",
+        porque: "Múltiplas visitas para o mesmo problema desgastam o cliente e consomem custo operacional desnecessário.",
+        fonte: "op"
+      }
+    ]
+  },
+  {
+    stage: "Pós Vistoria",
+    nps: 73,
+    cor: "#8DC99A",
+    kpis: [
+      {
+        nome: "Taxa de Vistoria Aprovada de Primeira",
+        val: "—", unit: "% de imóveis aprovados sem pendência na 1ª vistoria",
+        como: "Registrar resultado de cada vistoria (aprovada ou com pendências) no sistema de obra; revisar por empreendimento", tipo: "warn",
+        desc: "Proporção de unidades que passam pela vistoria sem gerar lista de pendências.",
+        porque: "Pendências abertas forçam o cliente a aceitar o imóvel com ressalvas — gerando neutros e detratores.",
+        fonte: "op"
+      },
+      {
+        nome: "Prazo Médio de Resolução de Pendências",
+        val: "—", unit: "dias corridos entre registro e encerramento das pendências de vistoria",
+        como: "Usar datas de abertura e encerramento de cada pendência no sistema; alertar quando ultrapassar 15 dias", tipo: "warn",
+        desc: "Tempo entre o registro de pendência na vistoria e a confirmação de resolução pela equipe de obra.",
+        porque: "\"Ficaram pontos pendentes. Aceitei porque não tenho como ficar marcando vistorias.\" — o cliente desiste, não satisfeito.",
+        fonte: "op"
+      },
+      {
+        nome: "Taxa de Reclamações por Motivo de Obra",
+        val: "—", unit: "% de reclamações relacionadas a acabamento, pintura e vedação no período",
+        como: "Filtrar o tracker de reclamações por motivo para categorias de obra; comparar mês a mês para identificar tendência", tipo: "warn",
+        desc: "Usa a taxa de reclamações por motivo que você já acompanha — filtrada para categorias de obra — como proxy de qualidade construtiva antes da entrega.",
+        porque: "É o indicador viável e disponível que antecipa o NPS de vistoria. Se sobe, o NPS de vistoria cai no mês seguinte.",
+        fonte: "op"
+      },
+      {
+        nome: "NPS do Técnico de Vistoria (individual)",
+        val: "—", unit: "NPS segmentado por profissional responsável",
+        como: "Cruzar NPS da pesquisa com o técnico responsável pela vistoria no CRM; revisar trimestralmente por profissional", tipo: "ref",
+        desc: "NPS calculado por técnico que conduziu a vistoria. Permite identificar dependência de pessoas-chave e disparidade de resultado por profissional.",
+        porque: "Variação de 0 a 100 no mesmo mês indica que o resultado depende do profissional, não do processo — risco de SPOF humano.",
+        fonte: "crm"
+      }
+    ]
+  },
+  {
+    stage: "Pós Chaves",
+    nps: 57,
+    cor: "#F5A623",
+    kpis: [
+      {
+        nome: "Taxa de Clientes Orientados sobre Ligação Enel",
+        val: "—", unit: "% de clientes que receberam o passo a passo da ligação individual antes da entrega",
+        como: "Registrar no CRM o envio do material informativo por cliente; verificar cobertura antes de cada data de entrega", tipo: "crit",
+        desc: "Mede se todos os clientes foram informados, com antecedência, sobre o processo de solicitação de ligação individual na Enel — evitando a percepção de desorganização no dia da entrega.",
+        porque: "A reclamação de \"falta de organização com energia e água\" vem da surpresa: o cliente não sabia que precisava acionar a concessionária. O problema é de comunicação, não de processo.",
+        fonte: "crm"
+      },
+      {
+        nome: "Taxa de Reclamações por Acabamento pós-Chaves",
+        val: "—", unit: "% de chamados abertos em até 30 dias após entrega com motivo de acabamento",
+        como: "Filtrar o tracker de reclamações por motivo para chamados de acabamento abertos em até 30 dias da entrega; revisar mensalmente", tipo: "warn",
+        desc: "Usa a taxa de reclamações por motivo que já é acompanhada, filtrada para chamados de acabamento nos primeiros 30 dias após a entrega de chaves.",
+        porque: "Acabamento e pintura apareceram em 34% dos comentários negativos dessa etapa. Chamados precoces são o sinal mais confiável de qualidade construtiva.",
+        fonte: "op"
+      },
+      {
+        nome: "Tempo Médio de 1ª Resposta Pós-Chaves",
+        val: "—", unit: "horas para 1ª resposta após solicitação do novo morador",
+        como: "Extrair timestamps de abertura e 1ª resposta do sistema de atendimento; acompanhar semanalmente na 1ª semana de cada entrega", tipo: "warn",
+        desc: "Mede a agilidade do time no momento de maior necessidade de suporte — a primeira semana após a entrega.",
+        porque: "\"Tudo burocrático para resolver\" — o primeiro atendimento é o que define se o cliente vai ser promotor ou detrator no NPS seguinte.",
+        fonte: "crm"
+      },
+      {
+        nome: "Taxa de Resposta à Pesquisa NPS",
+        val: "—", unit: "% de clientes que respondem a pesquisa nessa etapa",
+        como: "Calcular (respostas recebidas / convites enviados) no período; testar diferentes canais de envio se o volume estiver baixo", tipo: "warn",
+        desc: "Com apenas 21 respostas registradas, a amostra é insuficiente para decisões confiáveis. Aumentar o volume de coleta é prioritário antes de qualquer análise.",
+        porque: "Base pequena distorce o NPS — nessa etapa um único detrator move o indicador em 5+ pontos. O KPI de resposta é um pré-requisito para os demais.",
+        fonte: "crm"
+      }
+    ]
+  },
+  {
+    stage: "Pós Ocupação",
+    nps: -5,
+    cor: "#E05252",
+    kpis: [
+      {
+        nome: "Taxa de Reclamações por Motivo · Vagas",
+        val: "—", unit: "% das reclamações abertas com motivo 'vagas de garagem'",
+        como: "Filtrar o tracker de reclamações por motivo; comparar mês a mês para verificar se as ações de projeto estão reduzindo o volume", tipo: "crit",
+        desc: "Usa a taxa de reclamações por motivo que já é acompanhada — filtrada para o motivo vagas. É o termômetro direto do maior driver de NPS negativo nessa etapa.",
+        porque: "54% dos comentários negativos são sobre vagas. Esse motivo isolado explica grande parte do NPS -5. Monitorar a tendência permite saber se as ações de projeto estão surtindo efeito.",
+        fonte: "op"
+      },
+      {
+        nome: "MTTR — Áreas Comuns (chamados sob gestão da construtora)",
+        val: "—", unit: "dias entre abertura e resolução de chamado de área comum",
+        como: "Registrar datas de abertura e encerramento dos chamados de área comum no sistema de tickets; separar por tipo de equipamento", tipo: "crit",
+        desc: "Tempo médio de reparo de equipamentos e espaços de uso coletivo que são de responsabilidade da construtora: elevadores em garantia, portões, academia, iluminação de corredores.",
+        porque: "\"Elevadores dão problema de 15 em 15 dias\" — falhas recorrentes em áreas comuns destroem a confiança. Medido apenas onde vocês têm controle de execução.",
+        fonte: "op"
+      },
+      {
+        nome: "Taxa de Reclamações por Motivo · Infiltração e Vazamento",
+        val: "—", unit: "% das reclamações abertas com motivo 'infiltração' ou 'vazamento'",
+        como: "Filtrar o tracker de reclamações por motivo para categorias hídricas; observar se o volume cresce mês a mês como sinal antecedente", tipo: "crit",
+        desc: "Filtra, da taxa de reclamações por motivo já acompanhada, os chamados relacionados a problemas hídricos. Volume crescente indica falha construtiva sistêmica.",
+        porque: "Infiltrações aparecem em 14% dos comentários. Quando o volume de chamados por esse motivo sobe, o NPS do período seguinte tende a cair.",
+        fonte: "op"
+      },
+      {
+        nome: "Taxa de Reclamações por Motivo · Acústica / Ruído",
+        val: "—", unit: "% das reclamações abertas com motivo 'ruído' ou 'isolamento acústico'",
+        como: "Filtrar o tracker de reclamações por motivo para acústica; acompanhar mensalmente como indicador de alerta precoce", tipo: "warn",
+        desc: "Filtra os chamados relacionados a problemas acústicos da taxa de reclamações que já é acompanhada. Substitui qualquer auditoria técnica — o próprio volume de queixas é o sinal.",
+        porque: "\"Venderam dizendo que possui bom isolamento acústico, mas você escuta até o peido do vizinho\" — 21% citaram. Se sobe no tracker, é um alerta antes de virar NPS negativo.",
+        fonte: "op"
+      },
+      {
+        nome: "SLA de Atendimento Online (1ª resposta)",
+        val: "—", unit: "% de atendimentos respondidos em até 2h no horário comercial",
+        como: "Extrair do sistema de atendimento o tempo de 1ª resposta por ticket; monitorar semanalmente e identificar horários de gargalo", tipo: "warn",
+        desc: "Mede a velocidade do time de atendimento online em responder às solicitações dos moradores no canal digital.",
+        porque: "\"Dar melhor treinamento à equipe de atendimento online\" — 11% mencionaram o canal como problema. Velocidade de resposta é o proxy mais simples de qualidade percebida.",
+        fonte: "crm"
+      },
+      {
+        nome: "Índice de Satisfação com Áreas Comuns (ISAC)",
+        val: "—", unit: "nota média (0–10) em pesquisa dedicada sobre áreas comuns",
+        como: "Criar pesquisa trimestral dedicada (pode ser Google Forms ou integrada ao CRM) enviada a moradores de cada empreendimento", tipo: "warn",
+        desc: "Pesquisa trimestral específica sobre academia, piscina, salão de festas, parquinho e espaços coletivos. Desvinculada do NPS geral — captura insatisfação antes que ela apareça na pesquisa.",
+        porque: "18% dos comentários apontam áreas comuns aquém do prometido. Uma pesquisa dedicada permite ação corretiva antes do próximo ciclo de NPS.",
+        fonte: "crm"
+      }
+    ]
+  }
+];
+
+// ─────────── RENDER KPIs ───────────
+const kpiContainer = document.getElementById('kpiContainer');
+
+function originBadge(fonte) {
+  const map = { op: ['origin-op','Operacional'], crm: ['origin-crm','CRM'], fin: ['origin-fin','Financeiro'] };
+  const [cls, label] = map[fonte] || ['origin-op','—'];
+  return `<span class="kpi-origin-badge ${cls}">${label}</span>`;
+}
+
+KPI_DATA.forEach(block => {
+  const div = document.createElement('div');
+  div.className = 'kpi-stage-block';
+
+  const cells = block.kpis.map(k => `
+    <div class="kpi-cell">
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+        ${originBadge(k.fonte)}
+      </div>
+      <div class="kpi-cell-name">${k.nome}</div>
+      <div class="kpi-cell-val" style="color:${block.cor}">—</div>
+      <div class="kpi-cell-unit">${k.unit}</div>
+      <div class="kpi-cell-desc">${k.desc}</div>
+      <div class="kpi-cell-why">💬 ${k.porque}</div>
+    </div>
+  `).join('');
+
+  div.innerHTML = `
+    <div class="kpi-stage-header" style="background:${block.cor}">
+      <div>
+        <div class="st-name">${block.stage}</div>
+        <div class="st-sub">Indicadores de causa vinculados aos motivos de insatisfação</div>
+      </div>
+      <div>
+        <div class="st-sub">NPS Acumulado</div>
+        <div class="st-nps">${block.nps}</div>
+      </div>
+    </div>
+    <div class="kpi-grid">${cells}</div>
+  `;
+  kpiContainer.appendChild(div);
+});
+// ─────────── PROJEÇÃO 2026 ───────────
+const PROJ = {
+  hist: {
+    labels: ['Jan','Fev','Mar','Abr','Mai'],
+    nps:    [80, 84, 55, 80, 82],
+    acum:   [80, 82, 72, 73, 75],
+  },
+  meses: ['Jun','Jul','Ago','Set','Out','Nov','Dez'],
+  // NPS mensal projetado por cenário (reflete eventos do mês)
+  mensal: {
+    base: [65, 79, 80, 80, 62, 80, 80],
+    '75':  [67, 82, 83, 83, 65, 83, 83],
+    '80':  [71, 85, 86, 86, 69, 86, 86],
+  },
+  // NPS acumulado jan-dez projetado
+  acum: {
+    base: [72, 73, 73, 74, 71, 72, 73],
+    '75':  [73, 74, 75, 76, 74, 75, 76],
+    '80':  [74, 76, 77, 78, 76, 77, 78],
+  },
+  // Volume mensal projetado (base = ritmo atual + eventos)
+  vol_mensal: [160, 230, 240, 175, 280, 195, 191],
+  fechamento: { base: 73, '75': 76, '80': 78 },
+  cards: {
+    base: { cor: '#9B7FD4', label: 'Sem melhoria',     fechamento: 73, gap: -2, vol: 2300 },
+    '75': { cor: '#2D8C6E', label: 'Meta 75 · Fechar', fechamento: 76, gap:  1, vol: 2300 },
+    '80': { cor: '#F5A623', label: 'Desafio · Fechar 78+', fechamento: 78, gap: +3, vol: 2300 },
+  },
+  metas: [
+    {
+      etapa: 'Pós Venda',
+      atual: 93,
+      vol_sem: 350,
+      m75: 93, obs75: 'Manter — crescer de ~30 para ~50 resp/mês no 2º sem',
+      m80: 93, obs80: 'Manter — volume é a alavanca principal',
+      evento: null
+    },
+    {
+      etapa: 'Pós Financiamento',
+      atual: 84,
+      vol_sem: 320,
+      m75: 87, obs75: '▲ +3 pts — crescimento natural com novas entregas',
+      m80: 89, obs80: '▲ +5 pts',
+      evento: null
+    },
+    {
+      etapa: 'Assistência / Suporte Técnico',
+      atual: 77,
+      vol_sem: 380,
+      m75: 83, obs75: '▲ +6 pts — etapa de maior volume, alta alavancagem',
+      m80: 87, obs80: '▲ +10 pts — ação estrutural em chamados',
+      evento: null
+    },
+    {
+      etapa: 'Visita à Obra',
+      atual: 81,
+      vol_sem: 149,
+      m75: 81, obs75: 'Histórico: 84 e 78 em 2025 (~média 81) — manter padrão',
+      m80: 84, obs80: '▲ +3 pts — qualidade da visita e comunicação no ato',
+      evento: '🟡 Vista Parque · Jul (~70 resp) · 🟡 Vitória Acácia · Ago (~79 resp)'
+    },
+    {
+      etapa: 'Pós Vistoria',
+      atual: 73,
+      vol_sem: 80,
+      m75: 82, obs75: '▲ +9 pts — sem novos empreendimentos Diagonal em vistoria esse ano',
+      m80: 86, obs80: '▲ +13 pts — checklist revisado + acompanhamento de pendências',
+      evento: '⚠️ Sem histórico Diagonal para comparar'
+    },
+    {
+      etapa: 'Pós Chaves',
+      atual: 57,
+      vol_sem: 90,
+      m75: 81, obs75: '▲ +24 pts — Vista Mar (Jun) + Epic e Connect (Diagonal) sem histórico prévio',
+      m80: 88, obs80: '▲ +31 pts — Vista Mar e Diagonal precisam performar acima da média Victa',
+      evento: '🔵 Vista Mar · Jun · 🔵 Epic + Connect · sem histórico'
+    },
+    {
+      etapa: 'Pós Ocupação',
+      atual: -5,
+      vol_sem: 252,
+      m75: 10, obs75: 'Tendência +21pts/ano: Caucaia projetado ~0, Mondubim ~20 com ações',
+      m80: 18, obs80: 'Mondubim precisa NPS ≥25 — tendência histórica favorece com ações em áreas comuns',
+      evento: '🔴 Caucaia Jun (~80 resp) · 🔴 Mondubim Out (~150 resp)'
+    },
+  ]
+};
+
+let activeCen = '75';
+let projLineChart, projBarChart;
+
+function scenColor(s) {
+  return { base: '#9B7FD4', '75': '#2D8C6E', '80': '#F5A623' }[s];
+}
+
+function renderProjCards(scen) {
+  const d = PROJ.cards[scen];
+  const acumDez = PROJ.acum[scen][6];
+  const junNps  = PROJ.mensal[scen][0];
+  const outNps  = PROJ.mensal[scen][4];
+  const gapStr  = d.gap > 0 ? `+${d.gap} acima da meta 75` : d.gap === 0 ? '= meta 75 atingida' : `${d.gap} abaixo da meta 75`;
+  const gapColor = d.gap >= 0 ? 'var(--teal)' : '#E05252';
+  document.getElementById('projCards').innerHTML = `
+    <div class="proj-card">
+      <div class="lbl">NPS Acumulado · Dez/2026</div>
+      <div class="val" style="color:${d.cor}">${acumDez}</div>
+      <div class="sub" style="color:${gapColor};font-weight:600">${gapStr}</div>
+    </div>
+    <div class="proj-card">
+      <div class="lbl">Jun · Caucaia entra</div>
+      <div class="val" style="color:#E05252">${junNps}</div>
+      <div class="sub">NPS mensal · ~100 respostas Pós Ocupação</div>
+    </div>
+    <div class="proj-card">
+      <div class="lbl">Jul · Vista Parque · Visita à Obra</div>
+      <div class="val" style="color:#F5A623">~81</div>
+      <div class="sub">235 clientes · 30% resp · ~70 respostas estimadas</div>
+    </div>
+    <div class="proj-card">
+      <div class="lbl">Ago · Vitória Acácia · Visita à Obra</div>
+      <div class="val" style="color:#F5A623">~81</div>
+      <div class="sub">265 clientes · 30% resp · ~79 respostas estimadas</div>
+    </div>
+    <div class="proj-card">
+      <div class="lbl">Out · Mondubim entra</div>
+      <div class="val" style="color:#E05252">${outNps}</div>
+      <div class="sub">NPS mensal · ~150 respostas Pós Ocupação</div>
+    </div>
+    <div class="proj-card">
+      <div class="lbl">Total respostas estimado · 2026</div>
+      <div class="val" style="color:var(--green)">${d.vol.toLocaleString('pt-BR')}</div>
+      <div class="sub">Base atual: 829 (Jan–Mai)</div>
+    </div>
+  `;
+
+  function chipClass(v) {
+    if (v === null) return '';
+    if (v >= 75) return 'great'; if (v >= 50) return 'good';
+    if (v >= 0)  return 'warn';  return 'danger';
+  }
+  function diffChip(delta, obs) {
+    const cls = delta >= 25 ? 'hard' : delta >= 10 ? 'down' : delta > 0 ? 'up' : 'same';
+    return `<span class="diff-chip ${cls}">${obs}</span>`;
+  }
+
+  const tbody = document.getElementById('reqTableBody');
+  if (tbody) {
+    tbody.innerHTML = PROJ.metas.map(r => {
+      const isPoc = r.etapa.includes('Ocupação');
+      const rowBg = isPoc ? 'background:rgba(224,82,82,.04)' : '';
+      const evtTag = r.evento ? `<br><span style="font-size: 15px;color:var(--muted);font-weight:500">${r.evento}</span>` : '';
+      const volTag = `<span style="font-size: 15px;color:var(--muted)">~${r.vol_sem} resp</span>`;
+      const m75val = scen === 'base' ? r.atual : r.m75;
+      const m80val = scen === 'base' ? r.atual : r.m80;
+      const obs75  = scen === 'base' ? '— sem mudança' : r.obs75;
+      const obs80  = scen === 'base' ? '— sem mudança' : r.obs80;
+      const delta75 = m75val - r.atual;
+      const delta80 = m80val - r.atual;
+      return `<tr style="${rowBg}">
+        <td><strong>${r.etapa}</strong>${evtTag}</td>
+        <td>${volTag}</td>
+        <td><span class="nps-chip ${chipClass(r.atual)}">${r.atual}</span></td>
+        <td><span class="nps-chip ${chipClass(m75val)}">${m75val}</span></td>
+        <td>${diffChip(delta75, obs75)}</td>
+        <td><span class="nps-chip ${chipClass(m80val)}">${m80val}</span></td>
+        <td>${diffChip(delta80, obs80)}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function buildProjCharts(scen) {
+  const allLabels = [...PROJ.hist.labels, ...PROJ.meses];
+
+  // Acumulado histórico real + projetado
+  const acumHist = PROJ.hist.acum;
+  const acumProj = PROJ.acum[scen];
+  const acumLine = [...acumHist, ...acumProj];
+  const acumSolid = [...acumHist, ...Array(PROJ.meses.length).fill(null)];
+  const acumDash  = [...Array(acumHist.length - 1).fill(null), acumHist[acumHist.length-1], ...acumProj];
+
+  // NPS mensal (hist + projetado)
+  const mensalHist = PROJ.hist.nps;
+  const mensalProj = PROJ.mensal[scen];
+  const cor = scenColor(scen);
+
+  const barColors = [
+    ...mensalHist.map(v => v >= 75 ? '#2D8C6E' : v >= 50 ? '#A8EDCB' : '#E05252'),
+    ...mensalProj.map((v,i) => {
+      const isCaucaia = i === 0;
+      const isMondubim = i === 4;
+      if (isCaucaia || isMondubim) return 'rgba(224,82,82,.5)';
+      return cor + 'AA';
+    })
+  ];
+
+  if (projLineChart) projLineChart.destroy();
+  projLineChart = new Chart(document.getElementById('projLineChart'), {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          label: 'Acumulado real', data: acumSolid,
+          borderColor: '#2D8C6E', borderWidth: 2.5, pointRadius: 4,
+          pointBackgroundColor: '#2D8C6E', fill: false, tension: .3, spanGaps: false
+        },
+        {
+          label: 'Projeção', data: acumDash,
+          borderColor: cor, borderDash: [6,4], borderWidth: 2,
+          pointRadius: (ctx) => ctx.dataIndex >= acumHist.length ? 4 : 0,
+          pointBackgroundColor: cor, fill: false, tension: .3, spanGaps: true
+        },
+        {
+          label: 'Meta 75', data: Array(allLabels.length).fill(75),
+          borderColor: '#E05252', borderDash: [4,3], borderWidth: 1.5, pointRadius: 0, fill: false
+        },
+        {
+          label: 'Desafio 80', data: Array(allLabels.length).fill(80),
+          borderColor: '#F5A623', borderDash: [4,3], borderWidth: 1.2, pointRadius: 0, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            afterBody: (items) => {
+              const idx = items[0]?.dataIndex;
+              if (idx === 5)  return ['⚠ Caucaia entra em Jun'];
+              if (idx === 10) return ['⚠ Mondubim entra em Out'];
+              return [];
+            }
+          }
+        }
+      },
+      scales: {
+        y: { min: 40, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  if (projBarChart) projBarChart.destroy();
+  projBarChart = new Chart(document.getElementById('projBarChart'), {
+    type: 'bar',
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          label: 'NPS Mensal',
+          data: [...mensalHist, ...mensalProj],
+          backgroundColor: barColors,
+          borderRadius: 5, borderSkipped: false
+        },
+        {
+          label: 'Meta 75', type: 'line',
+          data: Array(allLabels.length).fill(75),
+          borderColor: '#E05252', borderDash: [4,3], borderWidth: 1.5,
+          pointRadius: 0, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 30, max: 100, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// Init projection tab
+renderProjCards(activeCen);
+// Charts built lazily on first tab open
+let projBuilt = false;
+
+document.querySelectorAll('.scen-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.scen-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCen = btn.dataset.scen;
+    renderProjCards(activeCen);
+    buildProjCharts(activeCen);
+  });
+});
+
+// ─────────── MONTE CARLO DATA ───────────
+const MC = {
+  base: {
+    label: 'Sem melhoria (NPS etapas como estão)',
+    media: 73.5, std: 1.1,
+    ic50: [73, 74], ic80: [72, 75],
+    probs: { 70: 99.9, 72: 93.8, 75: 16.4, 77: 0.8, 80: 0.0 },
+    hist: {68:1,69:60,70:710,71:5800,72:14200,73:17100,74:8600,75:3100,76:380,77:48},
+    acum_med:  [70.5,72.4,73.6,74.5,72.1,73.0,73.5],
+    acum_p10:  [69,71,72,73,70,71,72],
+    acum_p25:  [70,72,73,74,71,72,73],
+    acum_p75:  [71,73,74,75,73,74,74],
+    acum_p90:  [72,74,75,76,74,74,75],
+    assumptions: [
+      {etapa:'Pós Venda',           mu:93, sigma:3.0, note:'Histórico estável'},
+      {etapa:'Pós Financiamento',   mu:84, sigma:4.5, note:'Variância moderada'},
+      {etapa:'Assistência',         mu:77, sigma:3.0, note:'Histórico estável'},
+      {etapa:'Visita à Obra · Vista Parque (Jul)', mu:81, sigma:4.0, note:'235 clientes · 30% resp · ~70 resp · base 2025: 84'},
+      {etapa:'Visita à Obra · Vitória Acácia (Ago)', mu:81, sigma:4.0, note:'265 clientes · 30% resp · ~79 resp · base 2025: 78'},
+      {etapa:'Pós Vistoria',        mu:73, sigma:15,  note:'Alta variância (0–100 histórico)'},
+      {etapa:'Pós Chaves',          mu:65, sigma:20,  note:'Sem histórico mensal, incerteza alta'},
+      {etapa:'Pós Ocup. Caucaia',   mu: 0, sigma:8,   note:'Tendência: -53→-32→-5 (+24pts/ano)'},
+      {etapa:'Pós Ocup. Mondubim',  mu:20, sigma:15,  note:'Tendência + evento novo — incerteza alta'},
+      {etapa:'Pós Ocup. Regular',   mu:-3, sigma:5,   note:'Meses sem entrega'},
+    ]
+  },
+  '75': {
+    label: 'Meta 75 (com ações por etapa)',
+    media: 76.1, std: 0.9,
+    ic50: [76, 77], ic80: [75, 77],
+    probs: { 70: 100, 72: 100, 75: 92.6, 77: 18.4, 80: 0.4 },
+    hist: {71:1,72:30,73:820,74:7100,75:18600,76:16400,77:6200,78:780,79:67},
+    acum_med:  [71.8,74.4,75.8,76.8,74.4,75.4,76.1],
+    acum_p10:  [70,73,74,75,73,74,75],
+    acum_p25:  [71,74,75,76,74,74,75],
+    acum_p75:  [72,75,77,78,75,76,77],
+    acum_p90:  [73,76,77,78,76,77,77],
+    assumptions: [
+      {etapa:'Pós Venda',           mu:93, sigma:2.5, note:'Manter + volume ≥80/mês'},
+      {etapa:'Pós Financiamento',   mu:87, sigma:4.0, note:'▲ +3 pts'},
+      {etapa:'Assistência',         mu:83, sigma:3.0, note:'▲ +6 pts — ação em chamados'},
+      {etapa:'Visita à Obra · Vista Parque (Jul)', mu:81, sigma:3.5, note:'~70 resp · manter padrão histórico'},
+      {etapa:'Visita à Obra · Vitória Acácia (Ago)', mu:81, sigma:3.5, note:'~79 resp · manter padrão histórico'},
+      {etapa:'Pós Vistoria',        mu:82, sigma:12,  note:'▲ +9 pts — checklist revisado'},
+      {etapa:'Pós Chaves',          mu:78, sigma:18,  note:'▲ +13 pts — Vista Mar + Diagonal'},
+      {etapa:'Pós Ocup. Caucaia',   mu: 2, sigma:7,   note:'Tendência histórica + ações preventivas'},
+      {etapa:'Pós Ocup. Mondubim',  mu:22, sigma:12,  note:'Mondubim compensa Caucaia (+24pts/ano)'},
+      {etapa:'Pós Ocup. Regular',   mu: 0, sigma:5,   note:'Equilíbrio prom/det'},
+    ]
+  },
+  '80': {
+    label: 'Desafio 78+ (melhoria forte em todas)',
+    media: 78.1, std: 0.8,
+    ic50: [78, 79], ic80: [77, 79],
+    probs: { 70: 100, 72: 100, 75: 100, 77: 96.2, 80: 8.7 },
+    hist: {74:5,75:480,76:7200,77:17600,78:16800,79:6800,80:1050,81:65},
+    acum_med:  [73.2,75.8,77.4,78.5,76.3,77.3,78.1],
+    acum_p10:  [72,74,76,77,75,76,77],
+    acum_p25:  [72,75,77,78,75,76,77],
+    acum_p75:  [74,77,78,79,77,78,79],
+    acum_p90:  [74,77,79,80,78,79,79],
+    assumptions: [
+      {etapa:'Pós Venda',           mu:93, sigma:2.5, note:'Manter'},
+      {etapa:'Pós Financiamento',   mu:89, sigma:3.5, note:'▲ +5 pts'},
+      {etapa:'Assistência',         mu:87, sigma:3.0, note:'▲ +10 pts — ação estrutural'},
+      {etapa:'Visita à Obra · Vista Parque (Jul)', mu:84, sigma:3.0, note:'~70 resp · ▲ +3 pts acima do histórico'},
+      {etapa:'Visita à Obra · Vitória Acácia (Ago)', mu:84, sigma:3.0, note:'~79 resp · ▲ +3 pts acima do histórico'},
+      {etapa:'Pós Vistoria',        mu:86, sigma:10,  note:'▲ +13 pts'},
+      {etapa:'Pós Chaves',          mu:85, sigma:15,  note:'▲ +20 pts — Epic+Connect forte'},
+      {etapa:'Pós Ocup. Caucaia',   mu: 8, sigma:7,   note:'Tendência histórica + ações em áreas comuns'},
+      {etapa:'Pós Ocup. Mondubim',  mu:28, sigma:10,  note:'Mondubim com ação forte — tendência favorece'},
+      {etapa:'Pós Ocup. Regular',   mu: 3, sigma:5,   note:'Leve melhoria'},
+    ]
+  }
+};
+
+const MESES_PROJ = ['Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MC_COLORS = { base:'#9B7FD4', '75':'#2D8C6E', '80':'#F5A623' };
+let activeMC = 'base';
+let mcHistChart = null, mcBandChart = null;
+
+function sigmaDots(sigma) {
+  const max = 20; const filled = Math.min(5, Math.round(sigma / max * 5));
+  return Array.from({length:5}, (_,i) =>
+    `<span class="sigma-dot${i < filled ? ' fill' : ''}"></span>`
+  ).join('');
+}
+
+function renderMCProbs(scen) {
+  const d = MC[scen];
+  const metas = [
+    {meta:70, label:'NPS ≥ 70', cls:'p-ok'},
+    {meta:72, label:'NPS ≥ 72', cls:'p-ok'},
+    {meta:75, label:'NPS ≥ 75 (meta)', cls:'p-ok'},
+    {meta:77, label:'NPS ≥ 77', cls:'p-warn'},
+    {meta:80, label:'NPS ≥ 80', cls:'p-crit'},
+  ];
+  const cor = MC_COLORS[scen];
+  document.getElementById('mcProbGrid').innerHTML = metas.map(({meta,label,cls}) => {
+    const prob = d.probs[meta];
+    const barW = Math.max(2, prob);
+    return `<div class="prob-card ${cls}">
+      <div class="meta-lbl">${label}</div>
+      <div class="prob-val" style="color:${prob >= 75 ? '#2D8C6E' : prob >= 30 ? '#F5A623' : '#E05252'}">${prob}%</div>
+      <div style="height:5px;background:var(--border);border-radius:3px;margin:8px 0 4px;overflow:hidden">
+        <div style="width:${barW}%;height:100%;background:${cor};border-radius:3px;transition:width .6s"></div>
+      </div>
+      <div class="prob-sub">${d.ic50[0]}–${d.ic50[1]} IC 50%</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('mcDistLabel').textContent =
+    `${d.label} · Média ${d.media} · Desvio padrão ${d.std} · IC 80%: [${d.ic80[0]}, ${d.ic80[1]}]`;
+}
+
+function renderMCCharts(scen) {
+  const d = MC[scen];
+  const cor = MC_COLORS[scen];
+
+  // Histograma
+  const histKeys = Object.keys(d.hist).map(Number).sort((a,b)=>a-b);
+  const histVals = histKeys.map(k => d.hist[k]);
+  const histColors = histKeys.map(k => k >= 75 ? '#2D8C6E' : k >= 72 ? cor : '#E05252');
+
+  if (mcHistChart) mcHistChart.destroy();
+  mcHistChart = new Chart(document.getElementById('mcHistChart'), {
+    type: 'bar',
+    data: {
+      labels: histKeys,
+      datasets: [{
+        data: histVals,
+        backgroundColor: histColors,
+        borderRadius: 3, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${((ctx.raw / 50000) * 100).toFixed(1)}% das simulações`
+          }
+        }
+      },
+      scales: {
+        y: { display: false },
+        x: { grid: { display: false },
+             title: { display: true, text: 'NPS Acumulado Dez/2026', font: { size: 10 } } }
+      }
+    }
+  });
+
+  // Banda de confiança
+  if (mcBandChart) mcBandChart.destroy();
+  const allLabels = ['Jan','Fev','Mar','Abr','Mai', ...MESES_PROJ];
+  const histAccum = [80, 82, 72, 73, 75];
+
+  mcBandChart = new Chart(document.getElementById('mcBandChart'), {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        // IC 80% superior
+        { data: [...Array(5).fill(null), ...d.acum_p90],
+          borderColor: 'transparent', backgroundColor: cor + '18',
+          fill: '+1', pointRadius: 0, tension: .3 },
+        // IC 80% inferior
+        { data: [...Array(5).fill(null), ...d.acum_p10],
+          borderColor: 'transparent', backgroundColor: cor + '18',
+          fill: false, pointRadius: 0, tension: .3 },
+        // IC 50% superior
+        { data: [...Array(5).fill(null), ...d.acum_p75],
+          borderColor: 'transparent', backgroundColor: cor + '33',
+          fill: '+1', pointRadius: 0, tension: .3 },
+        // IC 50% inferior
+        { data: [...Array(5).fill(null), ...d.acum_p25],
+          borderColor: 'transparent', backgroundColor: cor + '33',
+          fill: false, pointRadius: 0, tension: .3 },
+        // Mediana projetada
+        { label: 'Mediana', data: [...Array(4).fill(null), 75, ...d.acum_med],
+          borderColor: cor, borderWidth: 2.5, pointRadius: 3,
+          pointBackgroundColor: cor, fill: false, tension: .3, spanGaps: true },
+        // Histórico real
+        { label: 'Real', data: [...histAccum, ...Array(7).fill(null)],
+          borderColor: '#2D8C6E', borderWidth: 2, pointRadius: 3,
+          pointBackgroundColor: '#2D8C6E', fill: false, tension: .3 },
+        // Meta 75
+        { label: 'Meta 75', data: Array(12).fill(75),
+          borderColor: '#E05252', borderDash: [4,3], borderWidth: 1.5,
+          pointRadius: 0, fill: false },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 55, max: 90, grid: { color: 'rgba(0,0,0,.04)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderMCAssumptions(scen) {
+  const d = MC[scen];
+  const half = Math.ceil(d.assumptions.length / 2);
+  const col1 = d.assumptions.slice(0, half);
+  const col2 = d.assumptions.slice(half);
+  const renderCol = (items) => `
+    <div class="assumption-box">
+      <div class="ab-title">Etapa · μ (média) · σ (desvio padrão)</div>
+      ${items.map(a => `
+        <div class="assumption-row">
+          <span>${a.etapa}</span>
+          <span style="display:flex;align-items:center;gap:8px">
+            <span class="ar-val" style="color:${a.mu>=75?'#2D8C6E':a.mu>=0?'#F5A623':'#E05252'}">${a.mu}</span>
+            <span class="sigma-bar">${sigmaDots(a.sigma)}</span>
+            <span style="font-size: 15px;color:var(--muted)">σ${a.sigma}</span>
+          </span>
+        </div>
+      `).join('')}
+    </div>`;
+  document.getElementById('mcAssumptions').innerHTML = renderCol(col1) + renderCol(col2);
+}
+
+function renderMC(scen) {
+  renderMCProbs(scen);
+  renderMCCharts(scen);
+  renderMCAssumptions(scen);
+}
+
+document.querySelectorAll('.mc-scen-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mc-scen-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeMC = btn.dataset.mcs;
+    renderMC(activeMC);
+  });
+});
+
+let mcBuilt = false;
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.getElementById('tab-' + tab).classList.add('active');
+    // Build projection charts on first open
+    if (tab === 'projecao' && !projBuilt) {
+      buildProjCharts(activeCen);
+      projBuilt = true;
+    }
+    if (tab === 'montecarlo' && !mcBuilt) {
+      renderMC(activeMC);
+      mcBuilt = true;
+    }
+  });
+});
+</script>
+</body>
+</html>
