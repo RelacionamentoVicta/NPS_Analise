@@ -420,7 +420,7 @@
   <div class="header-brand">
     <div>
       <div class="header-title">Dashboard NPS · Grupo Diagonal</div>
-      <div class="header-sub">Jornada de Experiência do Cliente Jan–Mai 2026</div>
+      <div class="header-sub">Jornada de Vendas Jan–Mai 2026 · Victa Engenharia & Diagonal</div>
     </div>
   </div>
   <div class="header-meta">
@@ -430,8 +430,7 @@
       <div class="sub" style="color:var(--accent); font-size: 15px;">✓ Meta atingida</div>
     </div>
     <div class="header-badge">
-      <div class="val" style="font-size:20px; color:rgba(255,255,255,.6)"></div>
-      <div class="lbl" style="margin-top:4px">Meta</div>
+      <div class="lbl" style="margin-top:4px">Meta Global</div>
       <div class="val" style="font-size:22px">75</div>
     </div>
     <div class="header-badge">
@@ -450,7 +449,7 @@
     <span class="tab-dot" style="background:#3DAFA6"></span>Por Etapa
   </button>
   <button class="tab-btn" data-tab="insights">
-    <span class="tab-dot" style="background:#F5A623"></span>Pontos &amp; Ações
+    <span class="tab-dot" style="background:#F5A623"></span>Pontos e Ações
   </button>
   <button class="tab-btn" data-tab="kpis">
     <span class="tab-dot" style="background:#9B7FD4"></span>KPIs de Causa
@@ -459,7 +458,7 @@
     <span class="tab-dot" style="background:#E05252"></span>Projeção 2026
   </button>
   <button class="tab-btn" data-tab="montecarlo">
-    <span class="tab-dot" style="background:#6C63FF"></span> Probabilidade - Monte Carlo
+    <span class="tab-dot" style="background:#6C63FF"></span>Probabilidade · Monte Carlo
   </button>
 </div>
 
@@ -528,15 +527,15 @@
         <tr>
           <td><strong>Pós Venda</strong></td>
           <td><span class="nps-chip great">93</span></td>
-          <td style="color:var(--teal)">+18</td>
+          <td style="color:var(--teal)">+3 <span style="font-size:13px;color:var(--muted)">(meta 90)</span></td>
           <td>148</td>
           <td>94% (140)</td><td>5% (7)</td><td>1% (2)</td>
-          <td>🟢 Destaque</td>
+          <td>🟢 Acima da meta</td>
         </tr>
         <tr>
           <td><strong>Pós Financiamento</strong></td>
           <td><span class="nps-chip great">84</span></td>
-          <td style="color:var(--teal)">+9</td>
+          <td style="color:var(--teal)">+4 <span style="font-size:13px;color:var(--muted)">(meta 80)</span></td>
           <td>259</td>
           <td>88% (227)</td><td>8% (22)</td><td>4% (10)</td>
           <td>🟢 Acima da meta</td>
@@ -544,15 +543,15 @@
         <tr>
           <td><strong>Assistência / Suporte Técnico</strong></td>
           <td><span class="nps-chip good">77</span></td>
-          <td style="color:var(--teal)">+2</td>
+          <td style="color:var(--teal)">+2 <span style="font-size:13px;color:var(--muted)">(meta 75)</span></td>
           <td>298</td>
           <td>85% (253)</td><td>7% (22)</td><td>8% (23)</td>
-          <td>🟡 Na meta</td>
+          <td>🟢 Na meta</td>
         </tr>
         <tr>
           <td><strong>Pós Vistoria</strong></td>
           <td><span class="nps-chip good">73</span></td>
-          <td style="color:var(--warn)">−2</td>
+          <td style="color:var(--warn)">−2 <span style="font-size:13px;color:var(--muted)">(meta 75)</span></td>
           <td>40</td>
           <td>82% (33)</td><td>8% (3)</td><td>10% (4)</td>
           <td>🟡 Atenção</td>
@@ -560,7 +559,7 @@
         <tr>
           <td><strong>Pós Chaves</strong></td>
           <td><span class="nps-chip warn">57</span></td>
-          <td style="color:var(--danger)">−18</td>
+          <td style="color:var(--danger)">−23 <span style="font-size:13px;color:var(--muted)">(meta 80)</span><br><span style="font-size:12px;color:var(--muted)">base reduzida (21 resp)</span></td>
           <td>21</td>
           <td>67% (14)</td><td>24% (5)</td><td>10% (2)</td>
           <td>🔴 Crítico</td>
@@ -568,10 +567,10 @@
         <tr>
           <td><strong>Pós Ocupação</strong></td>
           <td><span class="nps-chip danger">−5</span></td>
-          <td style="color:var(--danger)">−80</td>
+          <td style="color:var(--danger)">−15 <span style="font-size:13px;color:var(--muted)">(meta 10)</span></td>
           <td>63</td>
           <td>25% (16)</td><td>44% (28)</td><td>30% (19)</td>
-          <td>🔴 Crítico</td>
+          <td>🔴 Abaixo da meta<br><span style="font-size:12px;color:var(--muted)">trajetória: +24pts/ano</span></td>
         </tr>
       </tbody>
     </table>
@@ -779,9 +778,8 @@ const DATA = {
         "\"Recebi um excelente atendimento da corretora Edna, com muita atenção e delicadeza\""
       ],
       motivos: [
-        { pct: 50, label: "Falta de transparência e retorno após a assinatura", exemplo: "\"Maior transparência ao cliente do processo de aquisição... não há percepção de segurança das informações\"" },
-        { pct: 25, label: "Contrato não compreendido / não explicado na venda", exemplo: "\"A minuta do contrato não deveria ser tão engessada... alterações necessárias não foram permitidas\"" },
-        { pct: 25, label: "Insatisfação genérica com o pós-venda", exemplo: "\"O pós venda de vcs deixa muito a desejar\"" }
+        { pct: 57, label: "Falta de transparência e retorno após a assinatura", exemplo: "\"Um pouco mais de transparência e rapidez no retorno seria apreciado. Infelizmente, isso deixou bastante a desejar. Tenho recebido mensagens de particulares se apresentando como parceiros da Victa, mas por falta de clareza das etapas, não há percepção de segurança das informações.\"" },
+        { pct: 43, label: "Contrato não compreendido / sem espaço para ajuste", exemplo: "\"A minuta do contrato não deveria ser tão engessada. Durante a revisão percebi algumas alterações ou ajustes específicos necessários, mas não foi permitido.\"" }
       ],
       acoes: ["Tornar pontos-chave do contrato mais didáticos: glossário de cláusulas com contexto e linguagem acessível"],
       n_neg: 4
@@ -806,15 +804,15 @@ const DATA = {
         "Profissionais nomeados positivamente: Márcio, Erivam, Erivandro"
       ],
       motivos: [
-        { pct: 30, label: "Serviço incompleto / má execução", exemplo: "\"Precisei disponibilizar equipamentos pessoais para o carpinteiro concluir o serviço\" / \"Deixaram um buraco aberto e uma cerâmica quebrada\"" },
-        { pct: 20, label: "Chamado encerrado sem resolução", exemplo: "\"O chamado foi fechado sem o problema do meu quintal infiltrando água estar resolvido até o momento\"" },
-        { pct: 20, label: "Reincidência / múltiplas visitas para o mesmo problema", exemplo: "\"Estiveram 4 vezes no local e talvez tenha resolvido da quarta\"" },
-        { pct: 10, label: "Problema estrutural / falha de projeto", exemplo: "\"O dreno do ar condicionado cai dentro de uma caixa de gordura — erro de engenharia\"" },
-        { pct: 10, label: "Muitos reparos pendentes (genérico)", exemplo: "\"Tem muitos reparos para fazer ainda\"" },
-        { pct: 10, label: "Falta de comunicação sobre retorno no portal", exemplo: "\"Incluir texto sobre o retorno das assistências no portal\"" }
+        { pct: 30, label: "Serviço incompleto / má execução", exemplo: "\"Durante o reparo do meu piso laminado, precisei disponibilizar equipamentos pessoais para que o carpinteiro pudesse concluir o serviço.\" / \"Deixaram um buraco aberto e uma cerâmica quebrada na cozinha.\"" },
+        { pct: 20, label: "Chamado encerrado sem resolução", exemplo: "\"O chamado foi fechado sem o problema do meu quintal infiltrando água para o interior do apartamento estar resolvido até o momento.\"" },
+        { pct: 20, label: "Reincidência / múltiplas visitas para o mesmo problema", exemplo: "\"Melhorar os profissionais de execução, estiveram 4 vezes no local e talvez tenha resolvido da quarta. (Vazamento no banheiro)\"" },
+        { pct: 10, label: "Problema estrutural / falha de projeto", exemplo: "\"O dreno do ar condicionado da torre cai dentro de uma caixa de gordura, o que não era pra ter sido aceito e feito assim.\"" },
+        { pct: 10, label: "Problema não solucionado / sem alternativa", exemplo: "\"Problema não solucionado e sem alternativa de resolução.\"" },
+        { pct: 10, label: "Falta de comunicação sobre retorno no portal", exemplo: "\"Incluir texto sobre o retorno das assistências no portal.\"" }
       ],
       acoes: ["Bloquear encerramento de chamado sem confirmação do cliente", "Reavaliar o checklist de execução dos técnicos para verificar se cobre os tipos de serviço com mais reincidência — e atualizar onde houver lacunas"],
-      n_neg: 10
+      n_neg: 15
     },
     "Pós Vistoria": {
       pos: [
@@ -853,12 +851,12 @@ const DATA = {
         "25% de promotores mesmo em contexto de moradia com problemas"
       ],
       motivos: [
-        { pct: 46, label: "Vagas de garagem pequenas / mal projetadas", exemplo: "\"Vagas com tamanho minúsculos. Não se consegue ter acessibilidade quando tem dois carros\"" },
-        { pct: 14, label: "Qualidade dos materiais e acabamento", exemplo: "\"Piso de péssima qualidade, reboco mal feito... materiais de baixa qualidade\"" },
-        { pct: 14, label: "Áreas comuns aquém do prometido", exemplo: "\"Parquinho muito pequeno, academia com aparelhos de baixa qualidade, piscina diferente do projeto\"" },
-        { pct: 11, label: "Acústica ruim / isolamento insuficiente", exemplo: "\"Venderam dizendo que possui bom isolamento acústico, mas você escuta até o peido do vizinho\"" },
-        { pct: 11, label: "Infiltração e vazamentos", exemplo: "\"Vários apartamentos com vazamento em dias de chuva\"" },
-        { pct: 11, label: "Atendimento e comunicação pós-ocupação", exemplo: "\"Dar um melhor treinamento à equipe de atendimento online\"" }
+        { pct: 54, label: "Vagas de garagem pequenas / mal projetadas", exemplo: "\"Infelizmente estamos tendo muitossss problemas com as vagas, ficaram muito apertadas, e sem espaço para uma correção. Tem gerado muita dor de cabeça e estresse entre os condôminos.\"" },
+        { pct: 18, label: "Qualidade dos materiais e acabamento", exemplo: "\"Piso de péssima qualidade, reboco mal feito, de noite com a iluminação tudo fica evidente, as monstruosidades que a construtora entregou.\"" },
+        { pct: 14, label: "Atendimento e resolução de chamados", exemplo: "\"Primeiro a comunicação de atendimento. Segundo: passamos por uma situação ao fazer abertura do chamado onde o técnico foi até o apartamento, porém não concluiu o que deveria fazer e comentou que voltaria no dia seguinte, porém no sistema o mesmo finalizou o atendimento nem ao menos fez algo.\"" },
+        { pct: 11, label: "Acústica ruim / isolamento insuficiente", exemplo: "\"Se eu soubesse que a acústica desse prédio era ruim assim, teria comprado outro imóvel.\"" },
+        { pct: 11, label: "Infiltração e vazamentos", exemplo: "\"Quando eu fiz a vistoria tava tudo ok, depois surgiram vazamentos que deixaram a parede e o chão manchado, fiz o pedido do reparo com a mesma moça da vistoria, que disse que a Victa não poderia fazer nada.\"" },
+        { pct: 11, label: "Áreas comuns aquém do esperado", exemplo: "\"A qualidade do material é muito ruim, equipamentos dando problemas contínuos na academia, elevadores dão problema de 15 em 15 dias.\"" }
       ],
       acoes: ["Revisar o checklist de vistoria para avaliar se cobre os itens de assistência mais recorrentes no pós-ocupação", "Incluir sinalização na pesquisa de pós-ocupação sobre os principais temas reclamados para aumentar a especificidade das respostas"],
       n_neg: 28
@@ -1097,11 +1095,11 @@ const KPI_DATA = [
     cor: "#2D8C6E",
     kpis: [
       {
-        nome: "Taxa de Retorno do Corretor",
-        val: "—", unit: "% de clientes recontactados em até 48h após a assinatura",
-        como: "Extrair do CRM (CV/Salesforce) os registros de follow-up pós-assinatura; revisar mensalmente por corretor", tipo: "ref",
-        desc: "Mede se o corretor mantém contato ativo após a assinatura. Elogios nominais recorrentes mostram que quando isso acontece o NPS sobe consistentemente.",
-        porque: "Clientes que se sentem acompanhados dão notas mais altas. O abandono pós-assinatura é a origem da maioria das reclamações de transparência.",
+        nome: "Follow-up Proativo do Corretor pós-Assinatura",
+        val: "—", unit: "% de clientes que receberam contato ativo do corretor após a assinatura",
+        como: "Registrar os contatos proativos pós-assinatura no histórico do cliente; revisar mensalmente por corretor", tipo: "ref",
+        desc: "Mede se o corretor mantém contato ativo após a assinatura — um gesto simples que calibra a expectativa do cliente para o que vem a seguir. Os elogios nominais recorrentes na pesquisa mostram que quando isso acontece, o NPS sobe consistentemente.",
+        porque: "O cliente que compra na planta cria uma expectativa alta no momento da venda. Um follow-up proativo do corretor ajuda a alinhar essa expectativa com a realidade do processo — reduzindo a sensação de abandono e as reclamações de transparência que chegam ao Pós Venda.",
         fonte: "crm"
       },
       {
@@ -1109,7 +1107,7 @@ const KPI_DATA = [
         val: "—", unit: "% de clientes que acionaram atendimento com dúvida sobre o contrato após assinatura",
         como: "Filtrar tickets de atendimento com tag 'dúvida contratual' ou similar; acompanhar quinzenalmente", tipo: "warn",
         desc: "Mede quantos clientes, depois de assinar, voltaram com dúvidas ou estranhamento sobre termos do contrato. É um sinal direto de que a explicação do corretor foi insuficiente — não que o contrato seja ruim.",
-        porque: "29% dos comentários negativos envolvem frustração com cláusulas. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
+        porque: "57% dos comentários negativos envolvem falta de transparência e retorno após a assinatura, incluindo dúvidas sobre cláusulas. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
         fonte: "crm"
       },
       {
@@ -1125,7 +1123,7 @@ const KPI_DATA = [
         val: "—", unit: "horas entre acionamento do cliente e resposta da equipe sobre contrato",
         como: "Calcular a partir dos timestamps de abertura e 1ª resposta no sistema de atendimento; monitorar semanalmente", tipo: "warn",
         desc: "Mede a agilidade do time de atendimento ao responder dúvidas contratuais pós-assinatura. Clientes com dúvida que ficam sem resposta rápida migram de neutros para detratores.",
-        porque: "Lentidão no retorno foi citada em 28% dos comentários negativos. A dúvida contratual não resolvida rapidamente vira desconfiança.",
+        porque: "Contrato não compreendido / sem espaço para ajuste foi citado em 43% dos comentários negativos. A dúvida contratual não resolvida rapidamente vira desconfiança.",
         fonte: "crm"
       }
     ]
@@ -1179,7 +1177,7 @@ const KPI_DATA = [
         val: "—", unit: "dias corridos até encerramento do chamado",
         como: "Extrair do sistema de chamados a diferença entre data de abertura e encerramento; acompanhar semanalmente", tipo: "warn",
         desc: "Tempo entre abertura e resolução confirmada pelo cliente. É o KPI de maior correlação com NPS nessa etapa.",
-        porque: "40% dos comentários negativos são sobre chamados encerrados sem resolver o problema. Prazo longo = detrator.",
+        porque: "20% dos comentários negativos são sobre chamados encerrados sem resolver o problema. Prazo longo = detrator.",
         fonte: "op"
       },
       {
@@ -1191,7 +1189,7 @@ const KPI_DATA = [
         fonte: "op"
       },
       {
-        nome: "Taxa de Encerramento Indevido",
+        nome: "Taxa de Encerramento sem Confirmação",
         val: "—", unit: "% de chamados encerrados sem confirmação do cliente",
         como: "Verificar se o fluxo de encerramento exige confirmação do cliente; auditar amostra quinzenal de chamados fechados", tipo: "crit",
         desc: "Identifica chamados marcados como resolvidos no sistema sem que o cliente tenha confirmado a resolução.",
@@ -1265,7 +1263,7 @@ const KPI_DATA = [
         val: "—", unit: "% de chamados abertos em até 30 dias após entrega com motivo de acabamento",
         como: "Filtrar o tracker de reclamações por motivo para chamados de acabamento abertos em até 30 dias da entrega; revisar mensalmente", tipo: "warn",
         desc: "Usa a taxa de reclamações por motivo que já é acompanhada, filtrada para chamados de acabamento nos primeiros 30 dias após a entrega de chaves.",
-        porque: "Acabamento e pintura apareceram em 34% dos comentários negativos dessa etapa. Chamados precoces são o sinal mais confiável de qualidade construtiva.",
+        porque: "Acabamento e vedação apareceram em 33% dos comentários negativos dessa etapa. Chamados precoces são o sinal mais confiável de qualidade construtiva.",
         fonte: "op"
       },
       {
@@ -1312,7 +1310,7 @@ const KPI_DATA = [
         val: "—", unit: "% das reclamações abertas com motivo 'infiltração' ou 'vazamento'",
         como: "Filtrar o tracker de reclamações por motivo para categorias hídricas; observar se o volume cresce mês a mês como sinal antecedente", tipo: "crit",
         desc: "Filtra, da taxa de reclamações por motivo já acompanhada, os chamados relacionados a problemas hídricos. Volume crescente indica falha construtiva sistêmica.",
-        porque: "Infiltrações aparecem em 14% dos comentários. Quando o volume de chamados por esse motivo sobe, o NPS do período seguinte tende a cair.",
+        porque: "Infiltração e vazamentos aparecem em 11% dos comentários. Quando o volume de chamados por esse motivo sobe, o NPS do período seguinte tende a cair.",
         fonte: "op"
       },
       {
@@ -1320,7 +1318,7 @@ const KPI_DATA = [
         val: "—", unit: "% das reclamações abertas com motivo 'ruído' ou 'isolamento acústico'",
         como: "Filtrar o tracker de reclamações por motivo para acústica; acompanhar mensalmente como indicador de alerta precoce", tipo: "warn",
         desc: "Filtra os chamados relacionados a problemas acústicos da taxa de reclamações que já é acompanhada. Substitui qualquer auditoria técnica — o próprio volume de queixas é o sinal.",
-        porque: "\"Venderam dizendo que possui bom isolamento acústico, mas você escuta até o peido do vizinho\" — 21% citaram. Se sobe no tracker, é um alerta antes de virar NPS negativo.",
+        porque: "\"Venderam dizendo que possui bom isolamento acústico, mas você escuta até o peido do vizinho\" — 11% citaram. Se sobe no tracker, é um alerta antes de virar NPS negativo.",
         fonte: "op"
       },
       {
@@ -1328,7 +1326,7 @@ const KPI_DATA = [
         val: "—", unit: "% de atendimentos respondidos em até 2h no horário comercial",
         como: "Extrair do sistema de atendimento o tempo de 1ª resposta por ticket; monitorar semanalmente e identificar horários de gargalo", tipo: "warn",
         desc: "Mede a velocidade do time de atendimento online em responder às solicitações dos moradores no canal digital.",
-        porque: "\"Dar melhor treinamento à equipe de atendimento online\" — 11% mencionaram o canal como problema. Velocidade de resposta é o proxy mais simples de qualidade percebida.",
+        porque: "\"Dar melhor treinamento à equipe de atendimento online\" — atendimento e resolução de chamados foi citado em 14% dos comentários. Velocidade de resposta é o proxy mais simples de qualidade percebida.",
         fonte: "crm"
       },
       {
@@ -1336,7 +1334,7 @@ const KPI_DATA = [
         val: "—", unit: "nota média (0–10) em pesquisa dedicada sobre áreas comuns",
         como: "Criar pesquisa trimestral dedicada (pode ser Google Forms ou integrada ao CRM) enviada a moradores de cada empreendimento", tipo: "warn",
         desc: "Pesquisa trimestral específica sobre academia, piscina, salão de festas, parquinho e espaços coletivos. Desvinculada do NPS geral — captura insatisfação antes que ela apareça na pesquisa.",
-        porque: "18% dos comentários apontam áreas comuns aquém do prometido. Uma pesquisa dedicada permite ação corretiva antes do próximo ciclo de NPS.",
+        porque: "11% dos comentários apontam áreas comuns aquém do prometido. Uma pesquisa dedicada permite ação corretiva antes do próximo ciclo de NPS.",
         fonte: "crm"
       }
     ]
@@ -1358,9 +1356,6 @@ KPI_DATA.forEach(block => {
 
   const cells = block.kpis.map(k => `
     <div class="kpi-cell">
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px">
-        ${originBadge(k.fonte)}
-      </div>
       <div class="kpi-cell-name">${k.nome}</div>
       <div class="kpi-cell-val" style="color:${block.cor}">—</div>
       <div class="kpi-cell-unit">${k.unit}</div>
@@ -1434,7 +1429,7 @@ const PROJ = {
       atual: 77,
       vol_sem: 380,
       m75: 83, obs75: '▲ +6 pts — etapa de maior volume, alta alavancagem',
-      m80: 87, obs80: '▲ +10 pts — ação estrutural em chamados',
+      m80: 87, obs80: '▲ +10 pts — melhorias no processo de chamados',
       evento: null
     },
     {
@@ -1938,3 +1933,4 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 </script>
 </body>
 </html>
+
