@@ -1099,15 +1099,14 @@ const KPI_DATA = [
         val: "—", unit: "% de clientes que receberam contato ativo do corretor após a assinatura",
         como: "Registrar os contatos proativos pós-assinatura no histórico do cliente; revisar mensalmente por corretor", tipo: "ref",
         desc: "Mede se o corretor mantém contato ativo após a assinatura — um gesto simples que calibra a expectativa do cliente para o que vem a seguir. Os elogios nominais recorrentes na pesquisa mostram que quando isso acontece, o NPS sobe consistentemente.",
-        porque: "O cliente que compra na planta cria uma expectativa alta no momento da venda. Um follow-up proativo do corretor ajuda a alinhar essa expectativa com a realidade do processo — reduzindo a sensação de abandono e as reclamações de transparência que chegam ao Pós Venda.",
-        fonte: "crm"
+        porque: "O cliente que compra na planta cria uma expectativa alta no momento da venda. Um follow-up proativo do corretor ajuda a alinhar essa expectativa com a realidade do processo;
       },
       {
         nome: "Taxa de Clientes com Dúvida sobre Cláusula Contratual",
         val: "—", unit: "% de clientes que acionaram atendimento com dúvida sobre o contrato após assinatura",
         como: "Filtrar tickets de atendimento com tag 'dúvida contratual' ou similar; acompanhar quinzenalmente", tipo: "warn",
         desc: "Mede quantos clientes, depois de assinar, voltaram com dúvidas ou estranhamento sobre termos do contrato. É um sinal direto de que a explicação do corretor foi insuficiente — não que o contrato seja ruim.",
-        porque: "57% dos comentários negativos envolvem falta de transparência e retorno após a assinatura, incluindo dúvidas sobre cláusulas. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
+        porque: "Alguns comentários negativos envolvem falta de transparência e retorno após a assinatura de venda, incluindo dúvidas sobre cláusulas. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
         fonte: "crm"
       },
       {
@@ -1115,7 +1114,7 @@ const KPI_DATA = [
         val: "—", unit: "% de atendimentos com motivo 'não fui informado' ou 'corretor não explicou'",
         como: "Usar o tracker de reclamações por motivo já existente; criar categoria específica se não houver; revisar mensalmente", tipo: "warn",
         desc: "Filtra, da taxa de reclamações por motivo que já é acompanhada, os registros onde o cliente afirma que uma informação relevante não foi passada pelo corretor na venda.",
-        porque: "É o indicador mais direto de qualidade da venda. Quando sobe, o NPS do Pós Venda cai — e o problema já chegou ao cliente antes mesmo da obra.",
+        porque: "É um indicador mais direto de qualidade da venda. Quando sobe, o NPS do Pós Venda cai — e o problema já chegou ao cliente antes mesmo da obra.",
         fonte: "crm"
       },
       {
@@ -1123,7 +1122,7 @@ const KPI_DATA = [
         val: "—", unit: "horas entre acionamento do cliente e resposta da equipe sobre contrato",
         como: "Calcular a partir dos timestamps de abertura e 1ª resposta no sistema de atendimento; monitorar semanalmente", tipo: "warn",
         desc: "Mede a agilidade do time de atendimento ao responder dúvidas contratuais pós-assinatura. Clientes com dúvida que ficam sem resposta rápida migram de neutros para detratores.",
-        porque: "Contrato não compreendido / sem espaço para ajuste foi citado em 43% dos comentários negativos. A dúvida contratual não resolvida rapidamente vira desconfiança.",
+        porque: "Contrato não compreendido / sem espaço para ajuste foi citado em comentários negativos. A dúvida contratual não resolvida rapidamente vira desconfiança.",
         fonte: "crm"
       }
     ]
@@ -1151,7 +1150,7 @@ const KPI_DATA = [
       },
       {
         nome: "Taxa de Reclamações por Cláusula Contratual",
-        val: "—", unit: "% de clientes que acionaram suporte com dúvida ou contestação de cláusula",
+        val: "—", unit: "% de clientes que acionaram com dúvida ou contestação de cláusula",
         como: "Filtrar tickets de atendimento com motivo contratual no CRM; revisar quinzenalmente", tipo: "warn",
         desc: "Proporção de clientes que, após assinatura, retornaram com dúvidas ou insatisfação sobre termos contratuais — indicando que o contrato não foi suficientemente explicado no momento da venda.",
         porque: "Contratos unilaterais são uma realidade do setor, mas a insatisfação surge quando o cliente não entendeu o que assinou. O KPI captura falha de comunicação, não falha contratual.",
@@ -1177,7 +1176,7 @@ const KPI_DATA = [
         val: "—", unit: "dias corridos até encerramento do chamado",
         como: "Extrair do sistema de chamados a diferença entre data de abertura e encerramento; acompanhar semanalmente", tipo: "warn",
         desc: "Tempo entre abertura e resolução confirmada pelo cliente. É o KPI de maior correlação com NPS nessa etapa.",
-        porque: "20% dos comentários negativos são sobre chamados encerrados sem resolver o problema. Prazo longo = detrator.",
+        porque: "comentários negativos são sobre chamados encerrados sem resolver o problema. Prazo longo = detrator.",
         fonte: "op"
       },
       {
@@ -1231,7 +1230,7 @@ const KPI_DATA = [
         nome: "Taxa de Reclamações por Motivo de Obra",
         val: "—", unit: "% de reclamações relacionadas a acabamento, pintura e vedação no período",
         como: "Filtrar o tracker de reclamações por motivo para categorias de obra; comparar mês a mês para identificar tendência", tipo: "warn",
-        desc: "Usa a taxa de reclamações por motivo que você já acompanha — filtrada para categorias de obra — como proxy de qualidade construtiva antes da entrega.",
+        desc: "Usa a taxa de reclamações por motivo que você já acompanha — filtrada para categorias de obra — como motivo de qualidade antes da entrega.",
         porque: "É o indicador viável e disponível que antecipa o NPS de vistoria. Se sobe, o NPS de vistoria cai no mês seguinte.",
         fonte: "op"
       },
@@ -1326,7 +1325,7 @@ const KPI_DATA = [
         val: "—", unit: "% de atendimentos respondidos em até 2h no horário comercial",
         como: "Extrair do sistema de atendimento o tempo de 1ª resposta por ticket; monitorar semanalmente e identificar horários de gargalo", tipo: "warn",
         desc: "Mede a velocidade do time de atendimento online em responder às solicitações dos moradores no canal digital.",
-        porque: "\"Dar melhor treinamento à equipe de atendimento online\" — atendimento e resolução de chamados foi citado em 14% dos comentários. Velocidade de resposta é o proxy mais simples de qualidade percebida.",
+        porque: "\"Aprimorar os processos e a capacitação da equipe de atendimento, buscando maior eficiência e uma experiência mais fluida para o cliente..",
         fonte: "crm"
       },
       {
