@@ -1047,7 +1047,7 @@ function toggleDetail(stage, card) {
           ${motivoItems}
         </div>
         <div class="insight-box act">
-          <div class="insight-title">🚀 Ações possíveis</div>
+          <div class="insight-title">🚀 Ações Possíveis</div>
           ${actItems}
         </div>
       </div>
@@ -1080,7 +1080,7 @@ STAGE_NAMES.forEach(stage => {
         <div class="insight-title">⚠️ Motivos de Insatisfação</div>${motivoItems}
       </div>
       <div class="insight-box act">
-        <div class="insight-title">🚀 Ações</div>${actItems}
+        <div class="insight-title">🚀 Ações Possíveis</div>${actItems}
       </div>
     </div>
   `;
@@ -1107,7 +1107,7 @@ const KPI_DATA = [
         val: "—", unit: "% de clientes que acionaram atendimento com dúvida sobre o contrato após assinatura",
         como: "Filtrar tickets de atendimento com tag 'dúvida contratual' ou similar; acompanhar quinzenalmente", tipo: "warn",
         desc: "Mede quantos clientes, depois de assinar, voltaram com dúvidas ou estranhamento sobre termos do contrato. É um sinal direto de que a explicação do corretor foi insuficiente — não que o contrato seja ruim.",
-        porque: " comentários negativos envolvem falta de transparência e retorno após a assinatura, incluindo dúvidas sobre cláusulas. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
+        porque: "A falta de transparência e retorno após a assinatura, incluindo dúvidas sobre cláusulas, é um dos principais motivos de insatisfação no Pós Venda. O contrato é unilateral por natureza, mas a insatisfação surge quando o cliente não entendeu o que assinou.",
         fonte: "crm"
       },
       {
@@ -1115,7 +1115,7 @@ const KPI_DATA = [
         val: "—", unit: "% de atendimentos com motivo 'não fui informado' ou 'corretor não explicou'",
         como: "Usar o tracker de reclamações por motivo já existente; criar categoria específica se não houver; revisar mensalmente", tipo: "warn",
         desc: "Filtra, da taxa de reclamações por motivo que já é acompanhada, os registros onde o cliente afirma que uma informação relevante não foi passada pelo corretor na venda.",
-        porque: "É o indicador de qualidade da venda. Quando sobe, o NPS do Pós Venda cai — e o problema já chegou ao cliente antes mesmo da obra.",
+        porque: "É um indicador que reflete a qualidade da venda. Quando sobe, o NPS do Pós Venda cai — e o problema já chegou ao cliente antes mesmo da obra.",
         fonte: "crm"
       },
       {
@@ -1123,7 +1123,7 @@ const KPI_DATA = [
         val: "—", unit: "horas entre acionamento do cliente e resposta da equipe sobre contrato",
         como: "Calcular a partir dos timestamps de abertura e 1ª resposta no sistema de atendimento; monitorar semanalmente", tipo: "warn",
         desc: "Mede a agilidade do time de atendimento ao responder dúvidas contratuais pós-assinatura. Clientes com dúvida que ficam sem resposta rápida migram de neutros para detratores.",
-        porque: "Contrato não compreendido / sem espaço para ajuste foi citado em comentários negativos. A dúvida contratual não resolvida rapidamente vira desconfiança.",
+        porque: "Dúvidas contratuais não resolvidas rapidamente são uma das principais fontes de desconfiança no Pós Venda. A dúvida que não encontra resposta rápida vira desconfiança e migra o cliente para detrator.",
         fonte: "crm"
       }
     ]
@@ -1158,7 +1158,7 @@ const KPI_DATA = [
         fonte: "crm"
       },
       {
-        nome: "Frequência de Status Update",
+        nome: "Frequência de Atualização de Status",
         val: "—", unit: "média de comunicações ativas por cliente no processo",
         como: "Contar registros de contato proativo no histórico do CRM por cliente; avaliar mensalmente", tipo: "ref",
         desc: "Quantidade de comunicações proativas enviadas ao cliente durante o processo de financiamento.",
@@ -1177,7 +1177,7 @@ const KPI_DATA = [
         val: "—", unit: "dias corridos até encerramento do chamado",
         como: "Extrair do sistema de chamados a diferença entre data de abertura e encerramento; acompanhar semanalmente", tipo: "warn",
         desc: "Tempo entre abertura e resolução confirmada pelo cliente. É o KPI de maior correlação com NPS nessa etapa.",
-        porque: "tivemos comentários negativos são sobre chamados encerrados sem resolver o problema. Prazo longo = detrator.",
+        porque: "Chamados encerrados sem resolver o problema são a principal queixa nessa etapa. Prazo longo = detrator.",
         fonte: "op"
       },
       {
@@ -1185,7 +1185,7 @@ const KPI_DATA = [
         val: "—", unit: "% de chamados reabertos no mesmo problema em 30 dias",
         como: "Cruzar chamados com mesmo cliente e motivo nos últimos 30 dias no sistema de tickets; revisar mensalmente", tipo: "crit",
         desc: "Mede quantos chamados precisaram ser reabertos porque o problema voltou a ocorrer após o encerramento.",
-        porque: "\"Estiveram 4 vezes no local\" — reincidência é o maior destruidor de confiança no suporte técnico.",
+        porque: "Reincidência é o maior destruidor de confiança no suporte técnico.",
         fonte: "op"
       },
       {
@@ -1193,7 +1193,7 @@ const KPI_DATA = [
         val: "—", unit: "% de chamados encerrados sem confirmação do cliente",
         como: "Verificar se o fluxo de encerramento exige confirmação do cliente; auditar amostra quinzenal de chamados fechados", tipo: "crit",
         desc: "Identifica chamados marcados como resolvidos no sistema sem que o cliente tenha confirmado a resolução.",
-        porque: "\"O chamado foi fechado sem o problema estar resolvido\" — é o motivo mais grave de insatisfação nessa etapa.",
+        porque: "Chamados encerrados sem resolução são o motivo mais grave de insatisfação nessa etapa.",
         fonte: "op"
       },
       {
@@ -1224,7 +1224,7 @@ const KPI_DATA = [
         val: "—", unit: "dias corridos entre registro e encerramento das pendências de vistoria",
         como: "Usar datas de abertura e encerramento de cada pendência no sistema; alertar quando ultrapassar 15 dias", tipo: "warn",
         desc: "Tempo entre o registro de pendência na vistoria e a confirmação de resolução pela equipe de obra.",
-        porque: "\"Ficaram pontos pendentes. Aceitei porque não tenho como ficar marcando vistorias.\" — o cliente desiste, não satisfeito.",
+        porque: "Pendências em aberto fazem o cliente aceitar o imóvel sem estar satisfeito, gerando neutros e detratores.",
         fonte: "op"
       },
       {
@@ -1255,7 +1255,7 @@ const KPI_DATA = [
         val: "—", unit: "% de clientes que receberam o passo a passo da ligação individual antes da entrega",
         como: "Registrar no CRM o envio do material informativo por cliente; verificar cobertura antes de cada data de entrega", tipo: "crit",
         desc: "Mede se todos os clientes foram informados, com antecedência, sobre o processo de solicitação de ligação individual na Enel — evitando a percepção de desorganização no dia da entrega.",
-        porque: "A reclamação de \"falta de organização com energia e água\" vem da surpresa: o cliente não sabia que precisava acionar a concessionária. O problema é de comunicação, não de processo.",
+        porque: "A reclamação sobre falta de organização com energia e água vem da surpresa: o cliente não sabia que precisava acionar a concessionária. O problema é de comunicação, não de processo.",
         fonte: "crm"
       },
       {
@@ -1263,7 +1263,7 @@ const KPI_DATA = [
         val: "—", unit: "% de chamados abertos em até 30 dias após entrega com motivo de acabamento",
         como: "Filtrar o tracker de reclamações por motivo para chamados de acabamento abertos em até 30 dias da entrega; revisar mensalmente", tipo: "warn",
         desc: "Usa a taxa de reclamações por motivo que já é acompanhada, filtrada para chamados de acabamento nos primeiros 30 dias após a entrega de chaves.",
-        porque: "Acabamento e vedação apareceram em 33% dos comentários negativos dessa etapa. Chamados precoces são o sinal mais confiável de qualidade construtiva.",
+        porque: "Acabamento e vedação são os principais motivos de chamado nos primeiros 30 dias após a entrega de chaves. Chamados precoces são o sinal mais confiável de qualidade construtiva.",
         fonte: "op"
       },
       {
@@ -1271,7 +1271,7 @@ const KPI_DATA = [
         val: "—", unit: "horas para 1ª resposta após solicitação do novo morador",
         como: "Extrair timestamps de abertura e 1ª resposta do sistema de atendimento; acompanhar semanalmente na 1ª semana de cada entrega", tipo: "warn",
         desc: "Mede a agilidade do time no momento de maior necessidade de suporte — a primeira semana após a entrega.",
-        porque: "\"Tudo burocrático para resolver\" — o primeiro atendimento é o que define se o cliente vai ser promotor ou detrator no NPS seguinte.",
+        porque: "O primeiro atendimento pós-assinatura é o que define se o cliente vai ser promotor ou detrator no NPS seguinte.",
         fonte: "crm"
       },
       {
@@ -1294,7 +1294,7 @@ const KPI_DATA = [
         val: "—", unit: "% das reclamações abertas com motivo 'vagas de garagem'",
         como: "Filtrar o tracker de reclamações por motivo; comparar mês a mês para verificar se as ações de projeto estão reduzindo o volume", tipo: "crit",
         desc: "Usa a taxa de reclamações por motivo que já é acompanhada — filtrada para o motivo vagas. É o termômetro direto do maior driver de NPS negativo nessa etapa.",
-        porque: "54% dos comentários negativos são sobre vagas. Esse motivo isolado explica grande parte do NPS -5. Monitorar a tendência permite saber se as ações de projeto estão surtindo efeito.",
+        porque: "Vagas de garagem são o maior driver de NPS negativo no Pós Ocupação — o motivo isolado que mais explica o NPS negativo nessa etapa. Monitorar a tendência permite saber se as ações de projeto estão surtindo efeito.",
         fonte: "op"
       },
       {
@@ -1302,7 +1302,7 @@ const KPI_DATA = [
         val: "—", unit: "dias entre abertura e resolução de chamado de área comum",
         como: "Registrar datas de abertura e encerramento dos chamados de área comum no sistema de tickets; separar por tipo de equipamento", tipo: "crit",
         desc: "Tempo médio de reparo de equipamentos e espaços de uso coletivo que são de responsabilidade da construtora: elevadores em garantia, portões, academia, iluminação de corredores.",
-        porque: "\"Elevadores dão problema de 15 em 15 dias\" — falhas recorrentes em áreas comuns destroem a confiança. Medido apenas onde vocês têm controle de execução.",
+        porque: "Falhas recorrentes em áreas comuns, como elevadores, destroem a confiança. Medido apenas onde vocês têm controle de execução.",
         fonte: "op"
       },
       {
@@ -1310,7 +1310,7 @@ const KPI_DATA = [
         val: "—", unit: "% das reclamações abertas com motivo 'infiltração' ou 'vazamento'",
         como: "Filtrar o tracker de reclamações por motivo para categorias hídricas; observar se o volume cresce mês a mês como sinal antecedente", tipo: "crit",
         desc: "Filtra, da taxa de reclamações por motivo já acompanhada, os chamados relacionados a problemas hídricos. Volume crescente indica falha construtiva sistêmica.",
-        porque: "Infiltração e vazamentos aparecem em 11% dos comentários. Quando o volume de chamados por esse motivo sobe, o NPS do período seguinte tende a cair.",
+        porque: "Infiltração e vazamentos são uma queixa recorrente no Pós Ocupação. Quando o volume de chamados por esse motivo sobe, o NPS do período seguinte tende a cair.",
         fonte: "op"
       },
       {
@@ -1318,7 +1318,7 @@ const KPI_DATA = [
         val: "—", unit: "% das reclamações abertas com motivo 'ruído' ou 'isolamento acústico'",
         como: "Filtrar o tracker de reclamações por motivo para acústica; acompanhar mensalmente como indicador de alerta precoce", tipo: "warn",
         desc: "Filtra os chamados relacionados a problemas acústicos da taxa de reclamações que já é acompanhada. Substitui qualquer auditoria técnica — o próprio volume de queixas é o sinal.",
-        porque: "\"Venderam dizendo que possui bom isolamento acústico, mas você escuta até o peido do vizinho\" — 11% citaram. Se sobe no tracker, é um alerta antes de virar NPS negativo.",
+        porque: "Problemas de isolamento acústico são uma queixa presente no Pós Ocupação. Se o volume sobe no tracker, é um alerta antes de virar NPS negativo.",
         fonte: "op"
       },
       {
@@ -1326,7 +1326,7 @@ const KPI_DATA = [
         val: "—", unit: "% de atendimentos respondidos em até 2h no horário comercial",
         como: "Extrair do sistema de atendimento o tempo de 1ª resposta por ticket; monitorar semanalmente e identificar horários de gargalo", tipo: "warn",
         desc: "Mede a velocidade do time de atendimento online em responder às solicitações dos moradores no canal digital.",
-        porque: "\"Dar melhor treinamento à equipe de atendimento online\" — atendimento e resolução de chamados foi citado comentários. Velocidade de resposta é o proxy mais simples de qualidade percebida.",
+        porque: "Treinar melhor a equipe de atendimento online pode ajudar — esse é um dos temas citados pelos clientes nos comentários. Velocidade de resposta é um proxy simples de qualidade percebida.",
         fonte: "crm"
       },
       {
@@ -1334,7 +1334,7 @@ const KPI_DATA = [
         val: "—", unit: "nota média (0–10) em pesquisa dedicada sobre áreas comuns",
         como: "Criar pesquisa trimestral dedicada (pode ser Google Forms ou integrada ao CRM) enviada a moradores de cada empreendimento", tipo: "warn",
         desc: "Pesquisa trimestral específica sobre academia, piscina, salão de festas, parquinho e espaços coletivos. Desvinculada do NPS geral — captura insatisfação antes que ela apareça na pesquisa.",
-        porque: "11% dos comentários apontam áreas comuns aquém do prometido. Uma pesquisa dedicada permite ação corretiva antes do próximo ciclo de NPS.",
+        porque: "Áreas comuns aquém do prometido são um tema recorrente nos comentários do Pós Ocupação. Uma pesquisa dedicada permite ação corretiva antes do próximo ciclo de NPS.",
         fonte: "crm"
       }
     ]
@@ -1933,3 +1933,4 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 </script>
 </body>
 </html>
+
